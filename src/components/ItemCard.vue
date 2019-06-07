@@ -23,7 +23,7 @@
         </v-btn>
         <h4 class=" headline font-weight-light  mb-2">{{Item.name}}</h4>
         <div class="font-weight-light grey--text subheading mb-2">Description : {{Item.description}}</div>
-        <h3 class="display-1 font-weight-light orange--text mb-2">{{Item.price}} $</h3>
+        <h3 class="display-1 font-weight-light orange--text mb-2">{{Item.price}} $</h3> 
       </v-card-text>
     </v-card>
   </v-hover>
