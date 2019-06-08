@@ -1,6 +1,9 @@
 <template>
   <v-app>
     <!-- <v-img :src="require('./../src/assets/Logo.jpg')" aspect-ratio="1" /> -->
+    <Loading/>
+    <Login/>
+    <Register/>
     <v-toolbar absolute app>
       <v-toolbar-title class="headline text-uppercase">
         <span>BIMTECHSF</span>
@@ -41,9 +44,7 @@
         </v-menu>
       </div>
       <v-spacer></v-spacer>
-      <v-btn flat href="https://github.com/vuetifyjs/vuetify/releases/latest" target="_blank">
-        <span class="mr-2">Latest Release</span>
-      </v-btn>
+      <Profile/>
     </v-toolbar>
 
     <v-content>
@@ -54,14 +55,23 @@
 
 <script>
 import { mapMutations, mapState } from "vuex";
+import Loading from "./components/Loading";
+import Profile from "./components/Profile";
+import Login from "./components/Login";
+import Register from "./components/Register"
 export default {
   name: "App",
-  components: {},
+  components: {
+    Profile,
+    Loading,
+    Login,
+    Register
+  },
   created() {
     this.initialize();
   },
   computed: {
-    ...mapState(["Stock"])
+    ...mapState(["Stock", "isLoading"])
   },
   data() {
     return {};

@@ -55,7 +55,6 @@ export default {
     };
   },
   watch: {},
-  created() {},
   methods: {
     SetSubKey(key) {
       this.subKey = key;
