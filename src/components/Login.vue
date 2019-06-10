@@ -8,7 +8,6 @@
       </v-card-title>
       <v-card-text>
         <form class="mx-4" @submit.prevent="submit">
-          
           <v-text-field
             v-model="email"
             :error-messages="emailErrors"
@@ -26,7 +25,10 @@
             @input="$v.password.$touch()"
             @blur="$v.password.$touch()"
           ></v-text-field>
-          
+          <div v-if="error!=null" class="text-md-center">
+            <span class="red--text">{{error}}</span>
+            <br>
+          </div>
           <v-btn class="orange white--text" type="submit">Login</v-btn>
           <v-btn flat @click="clear">clear</v-btn>
         </form>
@@ -60,7 +62,8 @@ export default {
     lastname: "",
     email: "",
     password: "",
-    repassword: ""
+    repassword: "",
+    error: null
   }),
   components: {},
   watch: {
@@ -111,17 +114,24 @@ export default {
       return errors;
     },
     noError() {
-      return (
-        this.emailErrors.length == 0 &&
-        this.passwordErrors.length == 0 
-      );
+      return this.emailErrors.length == 0 && this.passwordErrors.length == 0;
     }
   },
   methods: {
     ...mapMutations(["closeLogin", "Login", "openRegister"]),
     submit() {
       this.$v.$touch();
-      if (this.noError) this.Login(this.email);
+      if (this.noError) {
+        var user = {
+          email: this.email,
+          password: this.password
+        };
+        this.error = "";
+        user.res = e => {
+          this.error = e;
+        };
+        this.Login(user);
+      }
     },
     clear() {
       this.$v.$reset();

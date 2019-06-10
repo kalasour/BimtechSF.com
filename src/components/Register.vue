@@ -52,8 +52,11 @@
             @input="$v.repassword.$touch()"
             @blur="$v.repassword.$touch()"
           ></v-text-field>
-
-          <v-btn class="orange white--text" type="submit">Login</v-btn>
+          <div v-if="error!=null" class="text-md-center">
+            <span class="red--text">{{error}}</span>
+            <br>
+          </div>
+          <v-btn class="orange white--text" type="submit">Register</v-btn>
           <v-btn flat @click="clear">clear</v-btn>
         </form>
       </v-card-text>
@@ -86,7 +89,8 @@ export default {
     lastname: "",
     email: "",
     password: "",
-    repassword: ""
+    repassword: "",
+    error: null
   }),
   components: {},
   watch: {
@@ -150,7 +154,18 @@ export default {
     ...mapMutations(["closeRegister", "Register", "openLogin"]),
     submit() {
       this.$v.$touch();
-      if (this.noError) this.Register(this.name);
+      if (this.noError)
+        var user = {
+          name: this.name,
+          lastname: this.lastname,
+          email: this.email,
+          password: this.password
+        };
+      this.error = "";
+      user.res = e => {
+        this.error = e;
+      };
+      this.Register(user);
     },
     clear() {
       this.$v.$reset();
