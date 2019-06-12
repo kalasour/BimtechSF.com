@@ -5,7 +5,7 @@
       <v-btn flat @click="openLogin()">login</v-btn>
     </div>
     <div v-else>
-      <v-btn flat v-if="userProfile.isAdmin" @click="$router.push('/manager')">
+      <v-btn flat v-if="userProfile.isAdmin" @click="$router.push({name:'Manager'})">
         <v-icon>perm_data_setting</v-icon>
         Manager
       </v-btn>

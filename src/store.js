@@ -9,7 +9,7 @@ export default new Vuex.Store({
     isLoading: false,
     dialogLogin: false,
     dialogRegister: false,
-    isLogin: false,
+    isLogin: null,
     user: {},
     userProfile: {},
     Categories: []
@@ -86,6 +86,7 @@ export default new Vuex.Store({
           // User is signed out.
           state.isLogin = false;
           state.user = {}
+          state.userProfile = {}
           state.isLoading = false
         }
       });
