@@ -18,22 +18,26 @@
         </v-expand-transition>
       </v-img>
       <v-card-text class="pt-4" style="position: relative;">
-        <v-btn absolute color="orange" class="white--text" fab right top>
+        <v-btn absolute color="orange" class="white--text" fab right top @click="AddToCart(Item)">
           <v-icon>add_shopping_cart</v-icon>
         </v-btn>
         <h4 class=" headline font-weight-light  mb-2">{{Item.name}}</h4>
         <div class="font-weight-light grey--text subheading mb-2">Description : {{Item.description}}</div>
         <h3 class="display-1 font-weight-light orange--text mb-2">{{Item.price}} $</h3> 
+        
       </v-card-text>
     </v-card>
   </v-hover>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   components: {},
   props: {
     Item: Object
+  },methods:{
+    ...mapMutations(["AddToCart"])
   }
 };
 </script>

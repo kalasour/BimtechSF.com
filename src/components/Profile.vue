@@ -5,6 +5,10 @@
       <v-btn flat @click="openLogin()">login</v-btn>
     </div>
     <div v-else>
+      <v-btn flat v-if="userProfile.isAdmin" @click="$router.push('/manager')">
+        <v-icon>perm_data_setting</v-icon>
+        Manager
+      </v-btn>
       <v-menu open-on-hover offset-y>
         <template v-slot:activator="{ on }">
           <v-btn flat v-on="on">
@@ -14,21 +18,13 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-tile > 
-            <v-list-tile-title class="blue--text" >
-              My account
-            </v-list-tile-title>
-            <v-icon color="blue"  class="ml-3">
-              menu
-            </v-icon>
+          <v-list-tile>
+            <v-list-tile-title class="blue--text">My account</v-list-tile-title>
+            <v-icon color="blue" class="ml-3">menu</v-icon>
           </v-list-tile>
-          <v-list-tile @click="Logout()" class="red--text"> 
-            <v-list-tile-title >
-              Logout
-            </v-list-tile-title>
-            <v-icon color="red">
-              power_settings_new
-            </v-icon>
+          <v-list-tile @click="Logout()" class="red--text">
+            <v-list-tile-title>Logout</v-list-tile-title>
+            <v-icon color="red">power_settings_new</v-icon>
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -41,11 +37,10 @@ import { mapMutations, mapState } from "vuex";
 import { auth } from "../firebase";
 
 export default {
-  data: () => ({
-  }),
+  data: () => ({}),
   components: {},
   computed: {
-    ...mapState(["user","isLogin"])
+    ...mapState(["user", "isLogin", "userProfile"])
   },
   methods: {
     ...mapMutations(["openLogin", "openRegister", "Logout"])

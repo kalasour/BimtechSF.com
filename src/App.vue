@@ -27,16 +27,16 @@
 
           <v-list>
             <v-list-tile
-              v-for="(item, index) in Object.keys(Stock)"
+              v-for="(item, index) in Categories"
               :key="index"
-              @click="goto('/RestaurantSupply/'+item)"
+              @click="goto('/RestaurantSupply/'+item.data().name)"
             >
               <v-list-tile-title>
                 <span
-                  v-if="$route.path.indexOf('/RestaurantSupply/'+item)!==-1"
+                  v-if="$route.path.indexOf('/RestaurantSupply/'+item.data().name)!==-1"
                   class="pink--text"
-                >{{ item }}</span>
-                <span v-else>{{ item }}</span>
+                >{{ item.data().name }}</span>
+                <span v-else>{{ item.data().name }}</span>
                 <v-icon class="right">keyboard_arrow_right</v-icon>
               </v-list-tile-title>
             </v-list-tile>
@@ -71,7 +71,7 @@ export default {
     this.initialize();
   },
   computed: {
-    ...mapState(["Stock", "isLoading"])
+    ...mapState(["Stock", "isLoading","Categories"])
   },
   data() {
     return {};

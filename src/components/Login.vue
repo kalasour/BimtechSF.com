@@ -134,6 +134,7 @@ export default {
       }
     },
     clear() {
+      this.error = "";
       this.$v.$reset();
       this.name = "";
       this.lastname = "";

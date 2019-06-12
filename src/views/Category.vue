@@ -15,20 +15,17 @@
             <span v-else class="body-1 px-2">{{$route.params.pathMatch}}</span>
           </v-btn>
         </v-layout>
-        <v-layout v-for="(key,index) in GetTag()" :key="index" class="px-3 py-0">
-          <v-btn flat class="pa-0 ma-0" @click="SetSubKey(key)">
-            <v-icon v-if="key==subKey" small class="pink--text">trip_origin</v-icon>
+        <v-layout v-for="(item,index) in subcate" :key="index" class="px-3 py-0">
+          <v-btn flat class="pa-0 ma-0" @click="SetSubKey(item.id)">
+            <v-icon v-if="item.id==subKey" small class="pink--text">trip_origin</v-icon>
             <v-icon v-else small>trip_origin</v-icon>
-            <span
-              v-if="key==subKey"
-              class="body-1 px-2 pink--text"
-            >{{(list.sub[key]==null)?'':((list.sub)[key].name)}}</span>
-            <span v-else class="body-1 px-2">{{(list.sub[key]==null)?'':((list.sub)[key].name)}}</span>
+            <span v-if="item.id==subKey" class="body-1 px-2 pink--text">{{item.name}}</span>
+            <span v-else class="body-1 px-2">{{item.name}}</span>
           </v-btn>
         </v-layout>
       </v-flex>
-      <v-flex xs12 sm6 md10 >
-        <ItemCard v-for="key in GetItem()" :key="key" :Item="list.list[key]"/>
+      <v-flex xs12 sm6 md10>
+        <ItemCard v-for="item in list" :key="item.id" :Item="item.data()"/>
       </v-flex>
     </v-layout>
   </v-container>
@@ -43,38 +40,57 @@ export default {
     ItemCard
   },
   computed: {
-    ...mapState(["Stock"]),
+    ...mapState(["Stock", "Categories"]),
     list: function() {
       return this.GetData();
     }
   },
   data() {
     return {
-      isRoot: false,
-      subKey: null
+      subKey: null,
+      subcate: []
     };
   },
-  watch: {},
+  watch: {
+  },
   methods: {
+    ...mapMutations(["setLoading"]),
     SetSubKey(key) {
       this.subKey = key;
     },
+    GetKeyFromPath() {
+      this.GetTag()
+      return this.Categories.map(item => {
+        if (this.$route.params.pathMatch == item.data().name) return item.id;
+      }).filter(element => element != null)[0];
+    },
+    GetDocFromPath() {
+      return this.Categories.map(item => {
+        if (this.$route.params.pathMatch == item.data().name) return item;
+      }).filter(element => element != null)[0];
+    },
     GetData() {
-      this.isRoot = this.$route.params.pathMatch == null;
-      if (this.isRoot) {
-        return this.Stock;
-      } else return this.Stock[this.$route.params.pathMatch];
+      return this.Stock.filter(
+        element =>{
+          var el = element.data()
+          return el.tag.indexOf(this.GetKeyFromPath()) != -1 &&
+          (this.subKey == null || el.tag.indexOf(this.subKey) != -1)}
+      );
     },
-    GetTag() {
-      const temp = this.list == null ? {} : this.list.sub;
-      return Object.keys(temp);
+    async GetTag() {
+      this.setLoading(true)
+      if(this.GetDocFromPath()!=null)await this.GetDocFromPath()
+        .ref.collection("sub")
+        .onSnapshot(async querySnapshot => {
+          this.subcate = [];
+          await querySnapshot.forEach(doc => {
+            // console.log(doc.data().name);
+            this.subcate.push({ name: doc.data().name, id: doc.id });
+          });
+          this.setLoading(false)
+        });
+      // console.log(data)
     },
-    GetItem() {
-      const temp = this.list == null ? {} : this.list.list;
-      return Object.keys(temp).filter(element => {
-        return element == this.subKey || this.subKey == null;
-      });
-    }
   }
 };
 </script>

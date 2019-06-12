@@ -5,14 +5,19 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    Stock: {},
+    Stock: [],
     isLoading: false,
     dialogLogin: false,
     dialogRegister: false,
     isLogin: false,
-    user: {}
+    user: {},
+    userProfile: {},
+    Categories: []
   },
   mutations: {
+    AddToCart(state, data) {
+
+    },
     Register(state, user) {
       state.isLoading = true
       auth.createUserWithEmailAndPassword(user.email, user.password).catch((error) => {
@@ -62,29 +67,45 @@ export default new Vuex.Store({
     setLoading(state, load) {
       state.isLoading = load
     },
-    async initialize(state) {
-      firestore.collection('Restaurant supply').doc('Stock').onSnapshot(docSnapshot => {
-        state.Stock = docSnapshot.data()
-        // console.log(`Received doc snapshot: ${docSnapshot}`);
-        // ...
-      }, err => {
-        // console.log(`Encountered error: ${err}`);
-      });
 
-
-      auth.onAuthStateChanged(user => {
+    initialize(state) {
+      state.isLoading = true
+      auth.onAuthStateChanged(async user => {
+        state.isLoading = true
         if (user) {
           // User is signed in.
+
           state.user = user
           state.isLogin = true;
-          // ...
+          firestore.collection('Users').doc(state.user.uid).onSnapshot(docSnapshot => {
+            state.userProfile = docSnapshot.data()
+            state.isLoading = false
+          }, err => {
+          });
         } else {
+          // User is signed out.
           state.isLogin = false;
           state.user = {}
-          // User is signed out.
-          // ...
+          state.isLoading = false
         }
       });
+      firestore.collection('Stock').onSnapshot(async function (querySnapshot) {
+        state.isLoading = true
+        state.Stock = [];
+        await querySnapshot.forEach((doc) => {
+          state.Stock.push(doc)
+        })
+        state.isLoading = false
+      });
+      firestore.collection('Categories').orderBy("name").onSnapshot(async function (querySnapshot) {
+        state.isLoading = true
+        state.Categories = [];
+        await querySnapshot.forEach((doc) => {
+          state.Categories.push(doc)
+        })
+        state.isLoading = false
+      });
+
     }
   },
   actions: {

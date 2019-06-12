@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Cate from './views/Category.vue'
+import Manager from './views/Manager.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -17,10 +18,16 @@ export default new Router({
       path: '/RestaurantSupply/*',
       name: 'RestaurantSupply',
       component: Cate
-    }, {
+    },
+    {
       path: '/RestaurantSupply',
       name: 'RestaurantSupplyAll',
       component: Cate
+    },
+    {
+      path: '/Manager',
+      name: 'Manager',
+      component: Manager
     },
     {
       path: '/about',
