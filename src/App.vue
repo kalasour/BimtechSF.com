@@ -58,7 +58,7 @@ import { mapMutations, mapState } from "vuex";
 import Loading from "./components/Loading";
 import Profile from "./components/Profile";
 import Login from "./components/Login";
-import Register from "./components/Register"
+import Register from "./components/Register";
 export default {
   name: "App",
   components: {
@@ -71,7 +71,7 @@ export default {
     this.initialize();
   },
   computed: {
-    ...mapState(["Stock", "isLoading","Categories"])
+    ...mapState(["Stock", "isLoading", "Categories"])
   },
   data() {
     return {};

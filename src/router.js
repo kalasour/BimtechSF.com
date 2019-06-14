@@ -25,8 +25,13 @@ export default new Router({
       component: Cate
     },
     {
-      path: '/Manager',
+      path: '/Manager/:state',
       name: 'Manager',
+      component: Manager
+    },
+    {
+      path: '/Manager/',
+      name: 'ManagerRoot',
       component: Manager
     },
     {

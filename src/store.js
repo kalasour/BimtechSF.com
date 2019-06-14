@@ -12,11 +12,20 @@ export default new Vuex.Store({
     isLogin: null,
     user: {},
     userProfile: {},
-    Categories: []
+    Categories: [],
+    listCate: []
   },
   mutations: {
     AddToCart(state, data) {
 
+    },
+    CreateCate(state, payload) {
+      if (payload.id) { firestore.collection('Categories').doc(payload.id).collection('sub').add({ name: payload.new }) }
+      else firestore.collection('Categories').add({ name: payload.new })
+    },
+    EditCate(state, payload) {
+      if (payload.parent) { firestore.collection('Categories').doc(payload.parent.id).collection('sub').doc(payload.id).update({ name: payload.new }) }
+      else firestore.collection('Categories').doc(payload.id).update({ name: payload.new })
     },
     Register(state, user) {
       state.isLoading = true
@@ -101,8 +110,24 @@ export default new Vuex.Store({
       firestore.collection('Categories').orderBy("name").onSnapshot(async function (querySnapshot) {
         state.isLoading = true
         state.Categories = [];
-        await querySnapshot.forEach((doc) => {
+        state.listCate = []
+        await querySnapshot.forEach(async (doc) => {
+
           state.Categories.push(doc)
+          var cat = { name: doc.data().name, id: doc.id }
+          await doc.ref.collection('sub').onSnapshot((async qr => {
+            state.isLoading = true
+            var ch = []
+            await qr.forEach(q => {
+              ch.push({ name: q.data().name, id: q.id, parent: { id: cat.id, name: cat.name } })
+            })
+            cat.children = ch
+            var arr = await state.listCate
+            await Vue.set(state, 'listCate', []);
+            await Vue.set(state, 'listCate', arr)
+            state.isLoading = false
+          }))
+          state.listCate.push(cat)
         })
         state.isLoading = false
       });
