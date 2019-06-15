@@ -33,12 +33,8 @@
 
 <script>
 import { mapMutations, mapState } from "vuex";
-import ItemCard from "./../components/ItemCard";
 export default {
   created() {},
-  components: {
-    ItemCard
-  },
   computed: {
     ...mapState(["Stock", "Categories"]),
     list: function() {
@@ -51,15 +47,14 @@ export default {
       subcate: []
     };
   },
-  watch: {
-  },
+  watch: {},
   methods: {
     ...mapMutations(["setLoading"]),
     SetSubKey(key) {
       this.subKey = key;
     },
     GetKeyFromPath() {
-      this.GetTag()
+      this.GetTag();
       return this.Categories.map(item => {
         if (this.$route.params.pathMatch == item.data().name) return item.id;
       }).filter(element => element != null)[0];
@@ -70,27 +65,30 @@ export default {
       }).filter(element => element != null)[0];
     },
     GetData() {
-      return this.Stock.filter(
-        element =>{
-          var el = element.data()
-          return el.tag.indexOf(this.GetKeyFromPath()) != -1 &&
-          (this.subKey == null || el.tag.indexOf(this.subKey) != -1)}
-      );
+      return this.Stock.filter(element => {
+        var el = element.data();
+        return (
+          el.tag.indexOf(this.GetKeyFromPath()) != -1 &&
+          (this.subKey == null || el.tag.indexOf(this.subKey) != -1) &&
+          el.isOff != true
+        );
+      });
     },
     async GetTag() {
-      this.setLoading(true)
-      if(this.GetDocFromPath()!=null)await this.GetDocFromPath()
-        .ref.collection("sub")
-        .onSnapshot(async querySnapshot => {
-          this.subcate = [];
-          await querySnapshot.forEach(doc => {
-            // console.log(doc.data().name);
-            this.subcate.push({ name: doc.data().name, id: doc.id });
+      this.setLoading(true);
+      if (this.GetDocFromPath() != null)
+        await this.GetDocFromPath()
+          .ref.collection("sub")
+          .onSnapshot(async querySnapshot => {
+            this.subcate = [];
+            await querySnapshot.forEach(doc => {
+              // console.log(doc.data().name);
+              this.subcate.push({ name: doc.data().name, id: doc.id });
+            });
+            this.setLoading(false);
           });
-          this.setLoading(false)
-        });
       // console.log(data)
-    },
+    }
   }
 };
 </script>

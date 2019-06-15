@@ -4,6 +4,12 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VuetifyConfirm from 'vuetify-confirm'
+import ItemCard from "./components/ItemCard";
+import UploadButton from 'vuetify-upload-button';
+
+Vue.component('ItemCard', ItemCard)
+Vue.component('upload-btn', UploadButton)
+
 Vue.use(VuetifyConfirm, {
   buttonTrueText: 'Accept',
   buttonFalseText: 'Discard',
@@ -13,6 +19,7 @@ Vue.use(VuetifyConfirm, {
   width: 350,
   property: '$confirm'
 })
+
 Vue.config.productionTip = false
 
 new Vue({

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { firestore, auth } from './firebase'
+import { firestore, auth, storage } from './firebase'
+import firebase from './firebase'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -18,6 +19,20 @@ export default new Vuex.Store({
   mutations: {
     AddToCart(state, data) {
 
+    },
+    UploadPicture(state, payload) {
+      storage.ref().child('test.png').put(payload).on('state_changed', (snapshot) => {
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+        switch (snapshot.state) {
+          case firebase.storage.TaskState.PAUSED: // or 'paused'
+            console.log('Upload is paused');
+            break;
+          case firebase.storage.TaskState.RUNNING: // or 'running'
+            console.log('Upload is running');
+            break;
+        }
+      })
     },
     CreateCate(state, payload) {
       if (payload.id) { firestore.collection('Categories').doc(payload.id).collection('sub').add({ name: payload.new }) }

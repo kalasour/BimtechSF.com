@@ -47,7 +47,10 @@
           <v-icon class="px-1 text-md-center" large @click="createCate(null)">create_new_folder</v-icon>
         </div>
       </v-flex>
-      <v-flex xs12 sm6 md9>{{tagKey}}</v-flex>
+      <v-flex xs12 sm6 md9>
+        <ItemCard  :Item="null"/>
+        <ItemCard v-for="item in list" :key="item.id" :Item="item.data()"/>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -65,7 +68,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(["listCate"])
+    ...mapState(["listCate","Stock"]),
+    list: function() {
+      return this.GetData();
+    }
   },
   watch: {
     "listCate.children": function() {
@@ -75,6 +81,14 @@ export default {
   components: {},
   methods: {
     ...mapMutations(["EditCate", "CreateCate", "DeleteCate"]),
+    GetData() {
+      return this.Stock.filter(element => {
+        var el = element.data();
+        return (
+          (this.tagKey == null || el.tag.indexOf(this.tagKey.id) != -1)
+        );
+      });
+    },
     setTagKey(key) {
       this.tagKey = key;
     },
