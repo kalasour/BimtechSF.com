@@ -27,6 +27,10 @@ export default new Vuex.Store({
       if (payload.parent) { firestore.collection('Categories').doc(payload.parent.id).collection('sub').doc(payload.id).update({ name: payload.new }) }
       else firestore.collection('Categories').doc(payload.id).update({ name: payload.new })
     },
+    DeleteCate(state, payload) {
+      if (payload.parent) { firestore.collection('Categories').doc(payload.parent.id).collection('sub').doc(payload.id).delete() }
+      else firestore.collection('Categories').doc(payload.id).delete()
+    },
     Register(state, user) {
       state.isLoading = true
       auth.createUserWithEmailAndPassword(user.email, user.password).catch((error) => {

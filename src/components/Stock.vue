@@ -35,11 +35,12 @@
           <template v-slot:label="{ item,open,leaf }">
             <span
               :style="{ cursor: 'pointer'}"
-              @click="setTagKey((item.id))"
+              @click="setTagKey((item))"
               class="body-1 pr-2"
             >{{item.name}}</span>
             <v-icon class="px-1" small @click="editCate(item)">edit</v-icon>
             <v-icon v-if="!leaf" class="pa-0" small @click="createCate(item)">note_add</v-icon>
+            <v-icon class="pa-0" small @click="deleteCate(item)">delete</v-icon>
           </template>
         </v-treeview>
         <div class="text-md-center">
@@ -73,7 +74,7 @@ export default {
   },
   components: {},
   methods: {
-    ...mapMutations(["EditCate", "CreateCate"]),
+    ...mapMutations(["EditCate", "CreateCate", "DeleteCate"]),
     setTagKey(key) {
       this.tagKey = key;
     },
@@ -83,13 +84,13 @@ export default {
     appCreateCate() {
       if (this.editing == null) this.editing = {};
       this.editing.new = this.edtingField;
-      this.CreateCate(this.editing)
+      this.CreateCate(this.editing);
       this.closeCate();
     },
     appEditCate() {
       if (this.editing == null) this.editing = {};
       this.editing.new = this.edtingField;
-      this.EditCate(this.editing)
+      this.EditCate(this.editing);
       this.closeCate();
     },
     createCate(item) {
@@ -102,6 +103,11 @@ export default {
       this.editing = null;
       this.edit = null;
       this.edtingField = "";
+    },
+    deleteCate(item) {
+      this.$confirm("Do you really want to delete?").then(res => {
+        if(res)this.DeleteCate(item)
+      });
     },
     editCate(item) {
       this.edit = true;
