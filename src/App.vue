@@ -4,7 +4,7 @@
     <Loading/>
     <Login/>
     <Register/>
-    <v-toolbar absolute app>
+    <v-toolbar fixed app>
       <v-toolbar-title class="headline text-uppercase">
         <span>BIMTECHSF</span>
         <span class="font-weight-light">.COM</span>

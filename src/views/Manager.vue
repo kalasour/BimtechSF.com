@@ -1,7 +1,8 @@
 <template>
   <div>
     <StockPage v-if="bottomNav==0" />
-    <v-bottom-nav :active.sync="bottomNav" :color="color" :value="true" absolute dark shift>
+    <v-footer></v-footer>
+    <v-bottom-nav fixed :active.sync="bottomNav" :color="color" :value="true"  dark shift>
       <v-btn dark @click="goto('/Manager/Stock')">
         <span>Stocks</span>
         <v-icon>table_chart</v-icon>
