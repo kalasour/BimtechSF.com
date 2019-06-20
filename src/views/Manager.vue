@@ -44,6 +44,9 @@ export default {
     StockPage
   },
   watch: {
+    userProfile:function(){
+      this.Authen()
+    },
     "$route.params": function() {
       var state = this.$route.params.state;
       if (state == null || state == "Stock") {

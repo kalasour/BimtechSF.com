@@ -69,6 +69,7 @@
             </div>
           </v-expand-transition>
           <v-btn
+            v-if="userProfile.isAdmin"
             absolute
             color="orange"
             class="white--text mt-4"
@@ -80,7 +81,16 @@
           </v-btn>
         </v-img>
         <v-card-text class="pt-4" style="position: relative;">
-          <v-btn absolute color="orange" class="white--text" style="z-index:0" fab right top @click="AddToCart(Item)">
+          <v-btn
+            absolute
+            color="orange"
+            class="white--text"
+            style="z-index:0"
+            fab
+            right
+            top
+            @click="AddToCart(Item)"
+          >
             <v-icon>add_shopping_cart</v-icon>
           </v-btn>
           <h4 class="headline font-weight-light mb-2">{{Item.name}}</h4>
@@ -125,12 +135,12 @@ export default {
     Item: Object
   },
   methods: {
-    ...mapMutations(["AddToCart","UploadPicture"]),
+    ...mapMutations(["AddToCart", "UploadPicture"]),
     addItem() {
       this.dialog = true;
     },
     fileHandle(file) {
-      this.UploadPicture(file)
+      this.UploadPicture(file);
     }
   }
 };
