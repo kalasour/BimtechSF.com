@@ -113,7 +113,7 @@
           <v-img contain max-height="125" :src="require('./../assets/add.png')"></v-img>
         </div>
         <div class="mt-5">
-          <p class="orange--text text-md-center title">Add item</p>
+          <p class="orange--text text-xs-center title">Add item</p>
         </div>
       </v-card>
     </v-hover>
@@ -122,6 +122,7 @@
 
 <script>
 import { mapMutations, mapState } from "vuex";
+import { URL } from 'url';
 export default {
   data: () => ({
     isOff: false,
@@ -140,6 +141,12 @@ export default {
       this.dialog = true;
     },
     fileHandle(file) {
+      // const fr = new FileReader ()
+      // console.log(file)
+      // fr.readAsDataURL(file)
+      // fr.addEventListener('load', () => {
+			// 		console.log(fr.result)
+			// 	})
       this.UploadPicture(file);
     }
   }

@@ -21,7 +21,8 @@ export default new Vuex.Store({
 
     },
     UploadPicture(state, payload) {
-      storage.ref().child('test.png').put(payload).on('state_changed', (snapshot) => {
+      var uploadTask = storage.ref('temp').child('temp').put(payload)
+      uploadTask.on('state_changed', (snapshot) => {
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');
         switch (snapshot.state) {
@@ -32,6 +33,14 @@ export default new Vuex.Store({
             console.log('Upload is running');
             break;
         }
+      }, function (error) {
+        // Handle unsuccessful uploads
+      }, function () {
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+          console.log('File available at', downloadURL);
+        });
       })
     },
     CreateCate(state, payload) {
