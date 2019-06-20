@@ -42,9 +42,17 @@ export default new Vuex.Store({
       if (payload.parent) { firestore.collection('Categories').doc(payload.parent.id).collection('sub').doc(payload.id).update({ name: payload.new }) }
       else firestore.collection('Categories').doc(payload.id).update({ name: payload.new })
     },
-    DeleteCate(state, payload) {
+    async DeleteCate(state, payload) {
       if (payload.parent) { firestore.collection('Categories').doc(payload.parent.id).collection('sub').doc(payload.id).delete() }
-      else firestore.collection('Categories').doc(payload.id).delete()
+      else {
+        await firestore.collection('Categories').doc(payload.id).collection('sub').get().then(
+          querySnapshot => querySnapshot.forEach(
+            async (doc) => {
+              await doc.ref.delete()
+            }
+          ))
+        firestore.collection('Categories').doc(payload.id).delete()
+      }
     },
     Register(state, user) {
       state.isLoading = true
