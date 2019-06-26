@@ -14,14 +14,28 @@ export default new Vuex.Store({
     user: {},
     userProfile: {},
     Categories: [],
-    listCate: []
+    listCate: [],
   },
   mutations: {
     AddToCart(state, data) {
 
     },
+    UpdateItem(state, payload) {
+      state.isLoading = true
+      firestore.collection('Stock').doc(payload.data.id).update(payload.data).then(doc=>{
+        payload.call(payload.data.id)
+        state.isLoading=false;
+      })
+    },
+    CreateItem(state, payload) {
+      state.isLoading = true
+      firestore.collection('Stock').add(payload.data).then(doc=>{
+        payload.call(doc.id)
+        state.isLoading=false;
+      })
+    },
     UploadPicture(state, payload) {
-      var uploadTask = storage.ref('temp').child('temp').put(payload)
+      var uploadTask = storage.ref('temp').child(payload.name).put(payload)
       uploadTask.on('state_changed', (snapshot) => {
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');
@@ -39,6 +53,7 @@ export default new Vuex.Store({
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+          console.log(uploadTask.snapshot)
           console.log('File available at', downloadURL);
         });
       })
@@ -112,7 +127,6 @@ export default new Vuex.Store({
     setLoading(state, load) {
       state.isLoading = load
     },
-
     initialize(state) {
       state.isLoading = true
       auth.onAuthStateChanged(async user => {

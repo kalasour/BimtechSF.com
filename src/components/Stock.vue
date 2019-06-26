@@ -49,7 +49,7 @@
       </v-flex>
       <v-flex xs12 sm6 md9>
         <ItemCard  :Item="null"/>
-        <ItemCard v-for="item in list" :key="item.id" :Item="item.data()"/>
+        <ItemCard v-for="item in list" :key="item.id" :Item="item.data()" :ID="item.id" />
       </v-flex>
     </v-layout>
   </v-container>
