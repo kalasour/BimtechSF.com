@@ -25,7 +25,7 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 sm6 md10>
-        <ItemCard v-for="item in list" :key="item.id" :Item="item.data()"/>
+        <ItemCard v-for="item in list" :key="item.id" :ID="item.id" :Item="item.data()"/>
       </v-flex>
     </v-layout>
   </v-container>
@@ -35,6 +35,7 @@
 import { mapMutations, mapState } from "vuex";
 export default {
   created() {},
+
   computed: {
     ...mapState(["Stock", "Categories"]),
     list: function() {
@@ -47,7 +48,11 @@ export default {
       subcate: []
     };
   },
-  watch: {},
+  watch: {
+    "$route.params.pathMatch": function() {
+      this.subKey = null;
+    }
+  },
   methods: {
     ...mapMutations(["setLoading"]),
     SetSubKey(key) {
@@ -70,7 +75,7 @@ export default {
         return (
           el.tag.indexOf(this.GetKeyFromPath()) != -1 &&
           (this.subKey == null || el.tag.indexOf(this.subKey) != -1) &&
-          el.isOff != true
+          el.isDisabled != true
         );
       });
     },

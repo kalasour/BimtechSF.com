@@ -79,7 +79,7 @@
       >
         <v-img
           :aspect-ratio="16/9"
-          :src="Item.imgs==null?'https://via.placeholder.com/150':Item.imgs[0]"
+          :src="Item.imgs==null?'https://via.placeholder.com/350':Item.imgs[0]"
         >
           <v-expand-transition v-if="Item.imgs!=null">
             <div
@@ -90,6 +90,17 @@
               <v-img :aspect-ratio="16/9" :src="Item.imgs[1]"></v-img>
             </div>
           </v-expand-transition>
+          <v-btn
+            v-if="userProfile.isAdmin"
+            absolute
+            color="grey darken-3"
+            class="white--text mt-4"
+            left
+            top
+            @click="deleteItem()"
+          >
+            <v-icon>delete</v-icon>
+          </v-btn>
           <v-btn
             v-if="userProfile.isAdmin"
             absolute
@@ -115,7 +126,9 @@
           >
             <v-icon>add_shopping_cart</v-icon>
           </v-btn>
-          <h4 class="headline font-weight-light mb-2">{{Item.name}}</h4>
+          <v-responsive :aspect-ratio="16/4">
+            <h4 class="headline font-weight-light mb-2">{{Item.name}}</h4>
+          </v-responsive>
           <div
             class="font-weight-light grey--text subheading mb-2"
           >Description : {{Item.description}}</div>
@@ -178,14 +191,19 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["AddToCart", "UploadPicture", "CreateItem", "UpdateItem"]),
+    ...mapMutations(["AddToCart", "UploadPicture", "CreateItem", "UpdateItem","DeleteItem"]),
+    deleteItem() {
+      this.$confirm("Do you really want to delete?").then(res => {
+        if(res)this.DeleteItem(this.ID)
+      });
+    },
     addItem() {
       this.e1 = 1;
       this.dialog = true;
     },
     editItem() {
       this.isOff = !!this.Item.isDisabled;
-      this.selectedItem = this.Item;
+      this.selectedItem = Object.assign({}, this.Item);
       this.selectedItem.id = this.ID;
       this.dialog = true;
     },

@@ -20,18 +20,24 @@ export default new Vuex.Store({
     AddToCart(state, data) {
 
     },
+    DeleteItem(state, payload) {
+      state.isLoading = true
+      firestore.collection('Stock').doc(payload).delete().then(() => {
+        state.isLoading = false
+      })
+    },
     UpdateItem(state, payload) {
       state.isLoading = true
-      firestore.collection('Stock').doc(payload.data.id).update(payload.data).then(doc=>{
+      firestore.collection('Stock').doc(payload.data.id).update(payload.data).then(doc => {
         payload.call(payload.data.id)
-        state.isLoading=false;
+        state.isLoading = false;
       })
     },
     CreateItem(state, payload) {
       state.isLoading = true
-      firestore.collection('Stock').add(payload.data).then(doc=>{
+      firestore.collection('Stock').add(payload.data).then(doc => {
         payload.call(doc.id)
-        state.isLoading=false;
+        state.isLoading = false;
       })
     },
     UploadPicture(state, payload) {
