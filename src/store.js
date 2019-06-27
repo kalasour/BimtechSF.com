@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { firestore, auth, storage } from './firebase'
 import firebase from './firebase'
+const uuidv1 = require('uuid/v1');
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -22,6 +23,11 @@ export default new Vuex.Store({
     },
     DeleteItem(state, payload) {
       state.isLoading = true
+      storage.ref(payload).listAll().then(res => {
+        res.items.forEach(itemRef => {
+          itemRef.delete()
+        })
+      })
       firestore.collection('Stock').doc(payload).delete().then(() => {
         state.isLoading = false
       })
@@ -40,8 +46,18 @@ export default new Vuex.Store({
         state.isLoading = false;
       })
     },
-    UploadPicture(state, payload) {
-      var uploadTask = storage.ref('temp').child(payload.name).put(payload)
+    DeletePictureItem(state, payload) {
+      try {
+        const ref = storage.refFromURL(payload).delete().then(() => {
+          console.log('Deleted')
+        })
+      } catch (error) {
+        console.log('No image in storage')
+      }
+    },
+    UploadPictureItem(state, payload) {
+      state.isLoading = true
+      var uploadTask = storage.ref(payload.id).child(uuidv1() + payload.file.name).put(payload.file)
       uploadTask.on('state_changed', (snapshot) => {
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');
@@ -61,6 +77,11 @@ export default new Vuex.Store({
         uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
           console.log(uploadTask.snapshot)
           console.log('File available at', downloadURL);
+          payload.call(downloadURL)
+          firestore.collection('Stock').doc(payload.id).update({
+            imgs: firebase.firestore.FieldValue.arrayUnion(downloadURL)
+          })
+          state.isLoading = false
         });
       })
     },

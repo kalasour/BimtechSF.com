@@ -15,7 +15,6 @@
               <v-divider v-if="n !== steps" :key="n"></v-divider>
             </template>
           </v-stepper-header>
-
           <v-stepper-items>
             <v-stepper-content v-for="n in steps" :key="`${n}-content`" :step="n">
               <v-layout v-if="n==1" wrap>
@@ -55,11 +54,43 @@
                   ></v-autocomplete>
                 </v-flex>
               </v-layout>
-              <v-layout v-if="n==2" wrap>
+              <v-container v-if="n==2&&selectedItem.id" grid-list-sm fluid>
+                <v-layout row wrap>
+                  <draggable v-model="imgs" class="flex d-flex">
+                    <v-hover v-for="(item,index) in imgs" :key="index">
+                      <v-img
+                        slot-scope="{ hover }"
+                        :src="item"
+                        max-width="150"
+                        max-height="150"
+                        aspect-ratio="1"
+                        class="grey lighten-2"
+                      >
+                        <v-expand-transition>
+                          <v-btn
+                            fab
+                            small
+                            v-if="hover"
+                            color="rgb(150, 150, 150, 0.5)"
+                            @click="deletePicture(index)"
+                            class="white--text"
+                          >
+                            <v-icon>clear</v-icon>
+                          </v-btn>
+                        </v-expand-transition>
+                        <template v-slot:placeholder>
+                          <v-layout fill-height align-center justify-center ma-0>
+                            <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                          </v-layout>
+                        </template>
+                      </v-img>
+                    </v-hover>
+                  </draggable>
+                </v-layout>
                 <v-flex xs12 sm6>
-                  <upload-btn @file-update="fileHandle" type="image"></upload-btn>
+                  <upload-btn ref="button" @file-update="fileHandle" type="image"></upload-btn>
                 </v-flex>
-              </v-layout>
+              </v-container>
               <v-btn v-if="!selectedItem.id" color="primary" @click="createItem()">Create</v-btn>
               <v-btn v-else color="primary" @click="updateItem()">Continue</v-btn>
 
@@ -165,7 +196,9 @@ export default {
     dialog: false,
     e1: 1,
     steps: 2,
-    selectedItem: {}
+    selectedItem: {},
+    imgs: [],
+    deleteList: []
   }),
   components: {},
   computed: {
@@ -188,13 +221,34 @@ export default {
       if (this.e1 > val) {
         this.e1 = val;
       }
+    },
+    Item() {
+      this.imgs = Object.assign([], this.Item.imgs);
+      this.isOff = !!this.Item.isDisabled;
+      this.selectedItem = Object.assign({}, this.Item);
+      this.selectedItem.id = this.ID;
     }
   },
   methods: {
-    ...mapMutations(["AddToCart", "UploadPicture", "CreateItem", "UpdateItem","DeleteItem"]),
+    ...mapMutations([
+      "AddToCart",
+      "UploadPictureItem",
+      "DeletePictureItem",
+      "CreateItem",
+      "UpdateItem",
+      "DeleteItem"
+    ]),
     deleteItem() {
       this.$confirm("Do you really want to delete?").then(res => {
-        if(res)this.DeleteItem(this.ID)
+        if (res) this.DeleteItem(this.ID);
+      });
+    },
+    deletePicture(index) {
+      this.$confirm("Do you really want to delete?").then(res => {
+        if (res) {
+          this.deleteList.push(this.imgs[index]);
+          this.imgs.splice(index, 1);
+        }
       });
     },
     addItem() {
@@ -202,6 +256,8 @@ export default {
       this.dialog = true;
     },
     editItem() {
+      this.deleteList = [];
+      this.imgs = Object.assign([], this.Item.imgs);
       this.isOff = !!this.Item.isDisabled;
       this.selectedItem = Object.assign({}, this.Item);
       this.selectedItem.id = this.ID;
@@ -224,11 +280,16 @@ export default {
           this.selectedItem.subCate
         );
       }
+      this.selectedItem.imgs = this.imgs;
       this.CreateItem({
         data: this.selectedItem,
         call: id => {
           this.selectedItem.id = id;
-          this.e1 = 2;
+          this.e1++;
+          if (this.e1 > 2) {
+            this.e1 = 1;
+            this.dialog = false;
+          }
         }
       });
     },
@@ -249,11 +310,19 @@ export default {
           this.selectedItem.subCate
         );
       }
+      this.deleteList.map(url => {
+        this.DeletePictureItem(url);
+      });
+      this.selectedItem.imgs = this.imgs;
       this.UpdateItem({
         data: this.selectedItem,
         call: id => {
           this.selectedItem.id = id;
-          this.e1 = 2;
+          this.e1++;
+          if (this.e1 > 2) {
+            this.e1 = 1;
+            this.dialog = false;
+          }
         }
       });
     },
@@ -264,12 +333,20 @@ export default {
     },
     fileHandle(file) {
       // const fr = new FileReader ()
-      console.log(file);
       // fr.readAsDataURL(file)
       // fr.addEventListener('load', () => {
       // 		console.log(fr.result)
       // 	})
-      this.UploadPicture(file);
+      if (file != null) {
+        this.UploadPictureItem({
+          file: file,
+          id: this.selectedItem.id,
+          call: url => {
+            this.imgs.push(url);
+          }
+        });
+        this.$refs.button[0].clear();
+      }
     },
     onInput(val) {
       this.steps = parseInt(val);

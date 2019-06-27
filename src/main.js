@@ -6,7 +6,8 @@ import store from './store'
 import VuetifyConfirm from 'vuetify-confirm'
 import ItemCard from "./components/ItemCard";
 import UploadButton from 'vuetify-upload-button';
-
+import draggable from 'vuedraggable'
+Vue.component('draggable',draggable)
 Vue.component('ItemCard', ItemCard)
 Vue.component('upload-btn', UploadButton)
 
