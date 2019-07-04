@@ -3,9 +3,10 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Cate from './views/Category.vue'
 import Manager from './views/Manager.vue'
+import EditProfile from './views/EditProfile.vue'
+import { auth } from './firebase'
 Vue.use(Router)
-
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -35,6 +36,12 @@ export default new Router({
       component: Manager
     },
     {
+      path: '/EditProfile',
+      name: 'EditProfile',
+      component: EditProfile,
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
@@ -44,3 +51,17 @@ export default new Router({
     }
   ]
 })
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to
+    .matched
+    .some(record => record.meta.requiresAuth)
+  console.log(requiresAuth)
+  const user = auth
+    .currentUser
+    console.log(!user)
+  if (requiresAuth && !user) {
+    next('/signin')
+  }
+  next()
+})
+export default router

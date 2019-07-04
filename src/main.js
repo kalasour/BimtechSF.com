@@ -7,7 +7,8 @@ import VuetifyConfirm from 'vuetify-confirm'
 import ItemCard from "./components/ItemCard";
 import UploadButton from 'vuetify-upload-button';
 import draggable from 'vuedraggable'
-Vue.component('draggable',draggable)
+import { auth } from './firebase'
+Vue.component('draggable', draggable)
 Vue.component('ItemCard', ItemCard)
 Vue.component('upload-btn', UploadButton)
 
@@ -22,9 +23,13 @@ Vue.use(VuetifyConfirm, {
 })
 
 Vue.config.productionTip = false
+const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+  new Vue({
+    router,
+    store,
+    render: h => h(App)
+  }).$mount('#app')
+  unsubscribe()
+})
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+

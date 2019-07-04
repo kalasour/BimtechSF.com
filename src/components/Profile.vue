@@ -6,8 +6,7 @@
     </div>
     <div v-else>
       <v-btn flat v-if="userProfile.isAdmin" @click="$router.push({path:'/Manager'})">
-        <v-icon>perm_data_setting</v-icon>
-        Manager
+        <v-icon>perm_data_setting</v-icon>Manager
       </v-btn>
       <v-menu open-on-hover offset-y>
         <template v-slot:activator="{ on }">
@@ -18,7 +17,7 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-tile>
+          <v-list-tile @click="$router.push({path:'/EditProfile'})">
             <v-list-tile-title class="blue--text">My account</v-list-tile-title>
             <v-icon color="blue" class="ml-3">menu</v-icon>
           </v-list-tile>

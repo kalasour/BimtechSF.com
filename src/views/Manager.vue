@@ -31,7 +31,6 @@ import StockPage from '../components/Stock'
 import { mapState, mapMutations } from "vuex";
 import Vue from 'vue'
 export default {
-
   data() {
     return {
       bottomNav: 0
@@ -76,6 +75,7 @@ export default {
     this.Authen();
   },
   methods: {
+    ...mapMutations(['setLoading']),
     goto(page) {
       this.$router.push({ path: page });
     },
