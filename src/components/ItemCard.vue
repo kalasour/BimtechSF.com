@@ -55,16 +55,16 @@
                 </v-flex>
               </v-layout>
               <v-container v-if="n==2&&selectedItem.id" grid-list-sm fluid>
-                <v-layout row wrap>
-                  <draggable v-model="imgs" class="flex d-flex">
-                    <v-hover v-for="(item,index) in imgs" :key="index">
+                <draggable v-model="imgs" class="layout row wrap">
+                  <v-flex d-flex xs3 v-for="(item,index) in imgs" :key="index">
+                    <v-hover>
                       <v-img
                         slot-scope="{ hover }"
                         :src="item"
                         max-width="150"
                         max-height="150"
                         aspect-ratio="1"
-                        class="grey lighten-2"
+                        class="grey lighten-2 ma-1"
                       >
                         <v-expand-transition>
                           <v-btn
@@ -85,12 +85,25 @@
                         </template>
                       </v-img>
                     </v-hover>
-                  </draggable>
-                </v-layout>
-                <v-flex xs12 sm6>
-                  <upload-btn ref="button" @file-update="fileHandle" type="image"></upload-btn>
-                </v-flex>
+                  </v-flex>
+                </draggable>
               </v-container>
+              <v-flex xs12>
+                <v-layout row wrap align-center class="my-2">
+                  <v-flex xs2>
+                    <upload-btn ref="button" @file-update="fileHandle" type="image"></upload-btn>
+                  </v-flex>
+                  <v-flex xs1>
+                    <p class="ma-1 text-xs-center title grey--text justify-center">or</p>
+                  </v-flex>
+                  <v-flex xs9>
+                    <v-layout row wrap>
+                      <v-text-field class="pa-0 mx-2" v-model="url" label="Image url" hide-details></v-text-field>
+                      <v-btn @click="AddHandle()">Add</v-btn>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
               <v-btn v-if="!selectedItem.id" color="primary" @click="createItem()">Create</v-btn>
               <v-btn v-else color="primary" @click="updateItem()">Continue</v-btn>
 
@@ -198,7 +211,8 @@ export default {
     steps: 2,
     selectedItem: {},
     imgs: [],
-    deleteList: []
+    deleteList: [],
+    url: ""
   }),
   components: {},
   computed: {
@@ -238,6 +252,14 @@ export default {
       "UpdateItem",
       "DeleteItem"
     ]),
+    AddHandle() {
+      if (this.url == "") {
+        alert('please insert url')
+        return;
+      }
+      this.imgs.push(this.url);
+      this.url = "";
+    },
     deleteItem() {
       this.$confirm("Do you really want to delete?").then(res => {
         if (res) this.DeleteItem(this.ID);

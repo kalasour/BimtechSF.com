@@ -57,7 +57,7 @@ export default new Vuex.Store({
     },
     UploadPictureItem(state, payload) {
       state.isLoading = true
-      var uploadTask = storage.ref(payload.id).child(uuidv1() + payload.file.name).put(payload.file)
+      var uploadTask = storage.ref('Stock').child(payload.id).child(uuidv1() + payload.file.name).put(payload.file)
       uploadTask.on('state_changed', (snapshot) => {
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');
