@@ -43,9 +43,9 @@ export default {
     StockPage
   },
   watch: {
-    userProfile:function(){
-      this.Authen()
-    },
+    // userProfile:function(){
+    //   this.Authen()
+    // },
     "$route.params": function() {
       var state = this.$route.params.state;
       if (state == null || state == "Stock") {
@@ -72,18 +72,18 @@ export default {
     }
   },
   updated() {
-    this.Authen();
+    // this.Authen();
   },
   methods: {
     ...mapMutations(['setLoading']),
     goto(page) {
       this.$router.push({ path: page });
     },
-    Authen() {
-      if (!this.userProfile.isAdmin) {
-        this.$router.push({ path: "/RestaurantSupply/DISPOSABLE" });
-      }
-    }
+    // Authen() {
+    //   if (!this.userProfile.isAdmin) {
+    //     this.$router.push({ path: "/RestaurantSupply/DISPOSABLE" });
+    //   }
+    // }
   }
 };
 </script>

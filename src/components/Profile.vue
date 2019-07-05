@@ -17,7 +17,7 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-tile @click="$router.push({path:'/EditProfile'})">
+          <v-list-tile @click="$router.push({path:'/Profile'})">
             <v-list-tile-title class="blue--text">My account</v-list-tile-title>
             <v-icon color="blue" class="ml-3">menu</v-icon>
           </v-list-tile>

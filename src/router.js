@@ -5,6 +5,7 @@ import Cate from './views/Category.vue'
 import Manager from './views/Manager.vue'
 import EditProfile from './views/EditProfile.vue'
 import { auth } from './firebase'
+import Store from './store'
 Vue.use(Router)
 const router = new Router({
   mode: 'history',
@@ -28,16 +29,18 @@ const router = new Router({
     {
       path: '/Manager/:state',
       name: 'Manager',
-      component: Manager
+      component: Manager,
+      meta: { requiresAdmin: true, requiresAuth: true }
     },
     {
       path: '/Manager/',
       name: 'ManagerRoot',
-      component: Manager
+      component: Manager,
+      meta: { requiresAdmin: true, requiresAuth: true }
     },
     {
-      path: '/EditProfile',
-      name: 'EditProfile',
+      path: '/Profile',
+      name: 'Profile',
       component: EditProfile,
       meta: { requiresAuth: true }
     },
@@ -55,13 +58,20 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to
     .matched
     .some(record => record.meta.requiresAuth)
-  console.log(requiresAuth)
+  const requiresAdmin = to
+    .matched
+    .some(record => record.meta.requiresAdmin)
   const user = auth
     .currentUser
-  console.log(!user)
+  const isAdmin = Store.state.userProfile.isAdmin
   if (requiresAuth && !user) {
-    next('/signin')
-  } else {
+    Store.commit('openLogin')
+    next(from)
+  } else if (requiresAdmin && !isAdmin) {
+    alert('Sorry,we cant access this!')
+    next(from)
+  }
+  else {
     next()
   }
 })

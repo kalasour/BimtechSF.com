@@ -2,10 +2,12 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { firestore, auth, storage } from './firebase'
 import firebase from './firebase'
+import router from './router'
 const uuidv1 = require('uuid/v1');
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+
   state: {
     Stock: [],
     isLoading: false,
@@ -18,6 +20,10 @@ export default new Vuex.Store({
     listCate: [],
   },
   mutations: {
+    async initUser(state, payload) {
+      state.user = payload.user
+      state.userProfile = payload.userProfile
+    },
     AddToCart(state, data) {
 
     },
@@ -134,7 +140,8 @@ export default new Vuex.Store({
         if (auth.currentUser != null) state.dialogLogin = false;
       });
     },
-    Logout(state) {
+    async Logout(state) {
+      window.location.reload()
       auth.signOut()
     },
     openLogin(state) {

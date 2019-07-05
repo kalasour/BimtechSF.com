@@ -68,7 +68,6 @@ export default {
     Register
   },
   created() {
-    this.initialize();
   },
   computed: {
     ...mapState(["Stock", "isLoading", "Categories"])
