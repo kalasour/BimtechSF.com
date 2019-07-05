@@ -58,10 +58,11 @@ router.beforeEach((to, from, next) => {
   console.log(requiresAuth)
   const user = auth
     .currentUser
-    console.log(!user)
+  console.log(!user)
   if (requiresAuth && !user) {
     next('/signin')
+  } else {
+    next()
   }
-  next()
 })
 export default router

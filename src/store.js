@@ -12,7 +12,7 @@ export default new Vuex.Store({
     dialogLogin: false,
     dialogRegister: false,
     isLogin: null,
-    user: {},
+    user: null,
     userProfile: {},
     Categories: [],
     listCate: [],
@@ -171,7 +171,7 @@ export default new Vuex.Store({
         } else {
           // User is signed out.
           state.isLogin = false;
-          state.user = {}
+          state.user = null
           state.userProfile = {}
           state.isLoading = false
         }
