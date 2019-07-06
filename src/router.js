@@ -39,8 +39,14 @@ const router = new Router({
       meta: { requiresAdmin: true, requiresAuth: true }
     },
     {
-      path: '/Profile',
+      path: '/Profile/:state',
       name: 'Profile',
+      component: EditProfile,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/Profile/',
+      name: 'ProfileRoot',
       component: EditProfile,
       meta: { requiresAuth: true }
     },

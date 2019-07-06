@@ -20,6 +20,26 @@ export default new Vuex.Store({
     listCate: [],
   },
   mutations: {
+    updatePersonal(state, user) {
+      state.isLoading = true
+      var User = firebase.auth().currentUser;
+      var credential = firebase.auth.EmailAuthProvider.credential(User.email, user.password)
+      User.reauthenticateWithCredential(credential).catch(function (error) {
+        var errorMessage = error.message;
+        user.res(errorMessage)
+        return error.message
+      }).then(async (e) => {
+        if (typeof (e) != 'string') {
+          await User.updateEmail(user.email)
+          await firestore.collection('Users').doc(User.uid).update({ lastname: user.lastname })
+          await User.updateProfile({
+            displayName: user.name,
+          })
+          user.success()
+        }
+        state.isLoading = false;
+      });
+    },
     async initUser(state, payload) {
       state.user = payload.user
       state.userProfile = payload.userProfile
