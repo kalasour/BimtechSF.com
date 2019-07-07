@@ -13,6 +13,7 @@
     "firebase-admin": "^8.2.0",
     "uuid": "^3.3.2",
     "vue": "^2.6.10",
+    "vue-places": "^1.1.0",
     "vue-router": "^3.0.3",
     "vuedraggable": "^2.23.0",
     "vuelidate": "^0.7.4",

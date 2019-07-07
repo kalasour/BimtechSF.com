@@ -20,6 +20,13 @@ export default new Vuex.Store({
     listCate: [],
   },
   mutations: {
+    updateAddress(state, payload) {
+      if (payload.index == -1) {
+        firestore.collection('Users').doc(state.user.uid).update({
+          Address: firebase.firestore.FieldValue.arrayUnion(payload.data)
+        })
+      }
+    },
     updatePersonal(state, user) {
       state.isLoading = true
       var User = firebase.auth().currentUser;

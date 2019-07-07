@@ -6,7 +6,6 @@
           <span class="headline">{{!edit?'Create':'Edit'}} category</span>
         </v-card-title>
         <v-card-text>
-          {{editing}}
           <v-layout wrap>
             <v-text-field label="category name" v-model="edtingField"></v-text-field>
             <v-btn color="blue darken-1" v-if="edit" flat @click="appEditCate">Apply</v-btn>
