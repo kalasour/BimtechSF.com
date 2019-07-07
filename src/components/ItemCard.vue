@@ -87,23 +87,29 @@
                     </v-hover>
                   </v-flex>
                 </draggable>
+                <v-flex xs12>
+                  <v-layout row wrap align-center class="my-2">
+                    <v-flex xs2>
+                      <upload-btn ref="button" @file-update="fileHandle" type="image"></upload-btn>
+                    </v-flex>
+                    <v-flex xs1>
+                      <p class="ma-1 text-xs-center title grey--text justify-center">or</p>
+                    </v-flex>
+                    <v-flex xs9>
+                      <v-layout row wrap>
+                        <v-text-field
+                          class="pa-0 mx-2"
+                          v-model="url"
+                          label="Image url"
+                          hide-details
+                        ></v-text-field>
+                        <v-btn @click="AddHandle()">Add</v-btn>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
               </v-container>
-              <v-flex xs12>
-                <v-layout row wrap align-center class="my-2">
-                  <v-flex xs2>
-                    <upload-btn ref="button" @file-update="fileHandle" type="image"></upload-btn>
-                  </v-flex>
-                  <v-flex xs1>
-                    <p class="ma-1 text-xs-center title grey--text justify-center">or</p>
-                  </v-flex>
-                  <v-flex xs9>
-                    <v-layout row wrap>
-                      <v-text-field class="pa-0 mx-2" v-model="url" label="Image url" hide-details></v-text-field>
-                      <v-btn @click="AddHandle()">Add</v-btn>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
+
               <v-btn v-if="!selectedItem.id" color="primary" @click="createItem()">Create</v-btn>
               <v-btn v-else color="primary" @click="updateItem()">Continue</v-btn>
 
@@ -254,7 +260,7 @@ export default {
     ]),
     AddHandle() {
       if (this.url == "") {
-        alert('please insert url')
+        alert("please insert url");
         return;
       }
       this.imgs.push(this.url);
