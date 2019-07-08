@@ -1,5 +1,5 @@
 <template>
-  <v-layout justify-center>
+  <v-layout  justify-center>
     <v-flex xs10>
       <v-container fluid grid-list-md>
         <v-layout row wrap>

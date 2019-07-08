@@ -1,9 +1,10 @@
 <template>
-  <v-app>
+  <v-app >
+    <!-- :style="{background: '#FCCD8D'}" -->
     <!-- <v-img :src="require('./../src/assets/Logo.jpg')" aspect-ratio="1" /> -->
-    <Loading/>
-    <Login/>
-    <Register/>
+    <Loading />
+    <Login />
+    <Register />
     <v-toolbar fixed app>
       <v-toolbar-title class="headline text-uppercase">
         <span>BIMTECHSF</span>
@@ -44,7 +45,7 @@
         </v-menu>
       </div>
       <v-spacer></v-spacer>
-      <Profile/>
+      <Profile />
     </v-toolbar>
 
     <v-content>
@@ -67,8 +68,7 @@ export default {
     Login,
     Register
   },
-  created() {
-  },
+  created() {},
   computed: {
     ...mapState(["Stock", "isLoading", "Categories"])
   },

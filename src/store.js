@@ -61,6 +61,32 @@ export default new Vuex.Store({
         })
       }
     },
+    updatePassword(state, user) {
+      state.isLoading = true
+      var User = firebase.auth().currentUser;
+      var credential = firebase.auth.EmailAuthProvider.credential(User.email, user.password)
+      User.reauthenticateWithCredential(credential).catch(function (error) {
+        var errorMessage = error.message;
+        user.res(errorMessage)
+        return error.message
+      }).then(async (e) => {
+        state.isLoading = false;
+        if (typeof (e) != 'string') {
+          await User.updatePassword(user.newpassword).catch(function (error) {
+            state.isLoading = false;
+            var errorMessage = error.message;
+            user.res(errorMessage)
+            return error.message
+          }).then((e) => {
+            if (typeof (e) != 'string')
+              user.success()
+            state.isLoading = false;
+          })
+
+        }
+
+      });
+    },
     updatePersonal(state, user) {
       state.isLoading = true
       var User = firebase.auth().currentUser;
