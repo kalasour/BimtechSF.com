@@ -140,7 +140,7 @@
                     v-if="index===(userProfile.defaultAddress==null?0:userProfile.defaultAddress)"
                     class="text-xs-center"
                   >
-                    <v-chip small color="pink" text-color="white">Default address</v-chip>
+                    <v-chip class="my-0" small color="pink" text-color="white">Default address</v-chip>
                   </div>
                 </v-layout>
               </v-flex>
