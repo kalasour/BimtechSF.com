@@ -20,10 +20,44 @@ export default new Vuex.Store({
     listCate: [],
   },
   mutations: {
+    setDefaultAddress(state, payload) {
+      firestore.collection('Users').doc(state.user.uid).update({
+        defaultAddress: payload
+      })
+    },
+    deleteAddress(state, payload) {
+      if (payload == state.userProfile.defaultAddress) firestore.collection('Users').doc(state.user.uid).update({
+        defaultAddress: 0
+      })
+      var Arr = state.userProfile.Address.slice(0)
+      Arr.splice(payload, 1)
+      firestore.collection('Users').doc(state.user.uid).update({
+        Address: Arr
+      })
+    },
     updateAddress(state, payload) {
+      state.isLoading = true;
       if (payload.index == -1) {
         firestore.collection('Users').doc(state.user.uid).update({
           Address: firebase.firestore.FieldValue.arrayUnion(payload.data)
+        }).then(() => {
+          state.isLoading = false
+          payload.res()
+        }).catch(err => {
+          state.isLoading = false
+          alert(err.message)
+        })
+      } else {
+        var Arr = state.userProfile.Address.slice(0)
+        Arr[payload.index] = payload.data
+        firestore.collection('Users').doc(state.user.uid).update({
+          Address: Arr
+        }).then(() => {
+          state.isLoading = false
+          payload.res()
+        }).catch(err => {
+          state.isLoading = false
+          alert(err.message)
         })
       }
     },

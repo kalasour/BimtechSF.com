@@ -25,8 +25,8 @@
               ></v-text-field>
               <v-text-field
                 v-model="email"
-                :error-messages="emailErrors"
                 label="E-mail"
+                :error-messages="emailErrors"
                 required
                 @input="$v.email.$touch()"
                 @blur="$v.email.$touch()"
@@ -134,24 +134,25 @@ export default {
     },
     submit() {
       this.$v.$touch();
-      if (this.noError)
+      if (this.noError) {
         var user = {
           name: this.name,
           lastname: this.lastname,
           email: this.email,
           password: this.password
         };
-      this.error = "";
-      this.success = "";
-      user.res = e => {
-        this.error = e;
+        this.error = "";
         this.success = "";
-      };
-      user.success = () => {
-        this.success = "Update success!";
-        this.clear();
-      };
-      this.updatePersonal(user);
+        user.res = e => {
+          this.error = e;
+          this.success = "";
+        };
+        user.success = () => {
+          this.success = "Update success!";
+          this.clear();
+        };
+        this.updatePersonal(user);
+      }
     },
     clear() {
       this.$v.$reset();
