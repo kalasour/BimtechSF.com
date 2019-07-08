@@ -14,9 +14,9 @@
                   <template slot-scope="{ hover }">
                     <span
                       v-if="index==currentIndex||hover"
-                      class="body-2 px-2 pink--text"
+                      class="body-2 px-2 pink--text text-truncate"
                     >{{item.text}}</span>
-                    <span v-else class="px-2">{{item.text}}</span>
+                    <span v-else class="px-2 text-truncate">{{item.text}}</span>
                   </template>
                 </v-hover>
               </div>
