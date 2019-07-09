@@ -9,17 +9,17 @@
         <v-divider></v-divider>
         <v-layout class="px-2 py-0">
           <v-btn flat class="pa-0 ma-0" @click="SetSubKey(null)">
-            <v-icon v-if="null==subKey" class="pink--text" small>trip_origin</v-icon>
+            <v-icon v-if="null==subKey" class="orange--text" small>trip_origin</v-icon>
             <v-icon v-else small>trip_origin</v-icon>
-            <span v-if="null==subKey" class="pink--text body-1 px-2">{{$route.params.pathMatch}}</span>
+            <span v-if="null==subKey" class="orange--text body-1 px-2">{{$route.params.pathMatch}}</span>
             <span v-else class="body-1 px-2">{{$route.params.pathMatch}}</span>
           </v-btn>
         </v-layout>
         <v-layout v-for="(item,index) in subcate" :key="index" class="px-3 py-0">
           <v-btn flat class="pa-0 ma-0" @click="SetSubKey(item.id)">
-            <v-icon v-if="item.id==subKey" small class="pink--text">trip_origin</v-icon>
+            <v-icon v-if="item.id==subKey" small class="orange--text">trip_origin</v-icon>
             <v-icon v-else small>trip_origin</v-icon>
-            <span v-if="item.id==subKey" class="body-1 px-2 pink--text">{{item.name}}</span>
+            <span v-if="item.id==subKey" class="body-1 px-2 orange--text">{{item.name}}</span>
             <span v-else class="body-1 px-2">{{item.name}}</span>
           </v-btn>
         </v-layout>

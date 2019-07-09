@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-dialog persistent width="550" v-model="dialog">
-      <v-card>
+    <v-dialog width="550" v-model="dialog">
+      <v-card :style="{'border-radius':'10px'}">
         <v-card-title class="pb-0">
           <p class="title">{{index==-1?'Create':'Edit'}}</p>
         </v-card-title>
@@ -108,18 +108,18 @@
               </v-layout>
             </v-container>
             <v-layout row justify-end>
-              <v-btn color="pink" class="white--text" type="submit">SUBMIT</v-btn>
+              <v-btn color="orange" class="white--text" type="submit">SUBMIT</v-btn>
               <v-btn color="secondary" flat @click="close">CLOSE</v-btn>
             </v-layout>
           </v-form>
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-card>
+    <v-card :style="{'border-radius':'10px'}">
       <v-card-title class="mx-3">
         <p class="headline">Address</p>
         <v-spacer></v-spacer>
-        <v-btn color="pink" class="white--text" @click="open(-1)">
+        <v-btn color="orange" class="white--text" @click="open(-1)">
           <v-icon dark class="mr-1">add</v-icon>Create
         </v-btn>
       </v-card-title>
@@ -140,7 +140,7 @@
                     v-if="index===(userProfile.defaultAddress==null?0:userProfile.defaultAddress)"
                     class="text-xs-center"
                   >
-                    <v-chip class="my-0" small color="pink" text-color="white">Default address</v-chip>
+                    <v-chip class="my-0" small color="orange" text-color="white">Default address</v-chip>
                   </div>
                 </v-layout>
               </v-flex>
@@ -276,6 +276,13 @@ export default {
         this.zipErrors.length == 0 &&
         this.phoneErrors.length == 0
       );
+    }
+  },
+  watch:{
+    dialog:function(){
+      if(this.dialog==false){
+        this.close()
+      }
     }
   },
   methods: {

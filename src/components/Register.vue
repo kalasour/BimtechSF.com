@@ -4,7 +4,7 @@
       <v-card-title>
         <span class="headline">Register</span>
         <v-spacer></v-spacer>
-        <v-btn class="pink--text" flat @click="openLogin()">login</v-btn>
+        <v-btn class="orange--text" flat @click="openLogin()">login</v-btn>
       </v-card-title>
       <v-card-text>
         <form class="mx-4" @submit.prevent="submit">

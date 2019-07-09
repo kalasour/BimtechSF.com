@@ -6,14 +6,14 @@
     <Login />
     <Forgot />
     <Register />
-    <v-toolbar fixed app>
+    <v-toolbar dark color="#454544" fixed app>
       <v-toolbar-title class="headline text-uppercase">
         <span>BIMTECHSF</span>
         <span class="font-weight-light">.COM</span>
       </v-toolbar-title>
       <v-btn @click="goto('/POS')" flat>
         <span v-if="this.$route.path!=='/POS'" class="mx-2">P.O.S</span>
-        <span v-else class="mx-2 pink--text">P.O.S</span>
+        <span v-else class="mx-2 orange--text ">P.O.S</span>
       </v-btn>
       <div class="text-xs-center">
         <v-menu open-on-hover offset-y>
@@ -21,7 +21,7 @@
             <v-btn @click="goto('/RestaurantSupply')" flat v-on="on">
               <span
                 v-if="$route.path.indexOf('/RestaurantSupply')!==-1"
-                class="pink--text"
+                class="orange--text"
               >Restaurant supply</span>
               <span v-else>Restaurant supply</span>
             </v-btn>
@@ -36,7 +36,7 @@
               <v-list-tile-title>
                 <span
                   v-if="$route.path.indexOf('/RestaurantSupply/'+item.data().name)!==-1"
-                  class="pink--text"
+                  class="orange--text"
                 >{{ item.data().name }}</span>
                 <span v-else>{{ item.data().name }}</span>
                 <v-icon class="right">keyboard_arrow_right</v-icon>

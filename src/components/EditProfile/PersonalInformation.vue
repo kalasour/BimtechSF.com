@@ -2,10 +2,11 @@
   <div>
     <v-layout justify-space-around>
       <v-flex xs6>
-        <v-card>
+        <v-card :style="{'border-radius':'10px'}">
           <v-card-text>
             <form class="mx-4" @submit.prevent="submit">
               <v-text-field
+                color="orange"
                 v-model="name"
                 :error-messages="nameErrors"
                 :counter="30"
@@ -15,6 +16,7 @@
                 @blur="$v.name.$touch()"
               ></v-text-field>
               <v-text-field
+                color="orange"
                 v-model="lastname"
                 :error-messages="lastnameErrors"
                 :counter="30"
@@ -25,20 +27,25 @@
               ></v-text-field>
               <v-text-field
                 v-model="email"
+                color="orange"
                 label="E-mail"
                 :error-messages="emailErrors"
                 required
                 @input="$v.email.$touch()"
                 @blur="$v.email.$touch()"
-              ></v-text-field>
-              <p
-                v-if="!user.emailVerified"
-                :style="{ cursor: 'pointer','text-decoration': 'underline'}"
-                @click="sendEmail()"
-                class="red--text"
-              >not verified</p>
-              <p v-else class="green--text">verified</p>
+              >
+                <template v-slot:append>
+                  <p
+                    v-if="!user.emailVerified"
+                    :style="{ cursor: 'pointer','text-decoration': 'underline'}"
+                    @click="sendEmail()"
+                    class="red--text text-xs-center"
+                  >not verified</p>
+                  <p v-else class="green--text text-xs-center">verified</p>
+                </template>
+              </v-text-field>
               <v-text-field
+                color="orange"
                 v-model="password"
                 :error-messages="passwordErrors"
                 label="Password"

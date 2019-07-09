@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-card>
+  <v-card :style="{'border-radius':'10px'}">
     <v-card-title>
       
     </v-card-title>

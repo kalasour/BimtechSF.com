@@ -2,7 +2,7 @@
   <div>
     <v-layout justify-space-around>
       <v-flex xs6>
-        <v-card>
+        <v-card :style="{'border-radius':'10px'}">
           <v-card-text>
             <form class="mx-4" @submit.prevent="submit">
               <v-text-field
