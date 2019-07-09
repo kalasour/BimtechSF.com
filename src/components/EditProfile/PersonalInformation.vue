@@ -31,6 +31,13 @@
                 @input="$v.email.$touch()"
                 @blur="$v.email.$touch()"
               ></v-text-field>
+              <p
+                v-if="!user.emailVerified"
+                :style="{ cursor: 'pointer','text-decoration': 'underline'}"
+                @click="sendEmail()"
+                class="red--text"
+              >not verified</p>
+              <p v-else class="green--text">verified</p>
               <v-text-field
                 v-model="password"
                 :error-messages="passwordErrors"
@@ -131,6 +138,11 @@ export default {
       this.name = this.user.displayName;
       this.email = this.user.email;
       this.lastname = this.userProfile.lastname;
+    },
+    sendEmail() {
+      this.user.sendEmailVerification().then(() => {
+        alert("send Email verified.");
+      });
     },
     submit() {
       this.$v.$touch();

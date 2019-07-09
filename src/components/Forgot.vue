@@ -68,13 +68,13 @@ export default {
       this.$v.$touch();
       if (this.noError) {
         var user = {
-          email: this.email,
+          email: this.email
         };
         this.error = "";
         user.res = e => {
           this.error = e;
         };
-        this.Forgot(user)
+        this.Forgot(user);
       }
     },
     clear() {

@@ -99,6 +99,7 @@ export default new Vuex.Store({
       }).then(async (e) => {
         if (typeof (e) != 'string') {
           await User.updateEmail(user.email)
+          await User.sendEmailVerification()
           await firestore.collection('Users').doc(User.uid).update({ lastname: user.lastname })
           await User.updateProfile({
             displayName: user.name,
@@ -208,7 +209,7 @@ export default new Vuex.Store({
       }).then(() => {
         if (auth.currentUser != null) {
           auth.currentUser.updateProfile({ displayName: user.name })
-
+          auth.currentUser.sendEmailVerification()
           firestore.collection('Users').doc(auth.currentUser.uid).set({
             lastname: user.lastname,
           })
