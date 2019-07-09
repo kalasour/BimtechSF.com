@@ -25,6 +25,7 @@
             @input="$v.password.$touch()"
             @blur="$v.password.$touch()"
           ></v-text-field>
+          <p class="primary--text" :style="{ cursor: 'pointer','text-decoration': 'underline'}" @click="openForgot">Forgot your password?</p>
           <div v-if="error!=null" class="text-md-center">
             <span class="red--text">{{error}}</span>
             <br>
@@ -118,7 +119,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["closeLogin", "Login", "openRegister"]),
+    ...mapMutations(["closeLogin", "Login", "openRegister","openForgot"]),
     submit() {
       this.$v.$touch();
       if (this.noError) {

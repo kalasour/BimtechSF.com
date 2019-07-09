@@ -4,6 +4,7 @@
     <!-- <v-img :src="require('./../src/assets/Logo.jpg')" aspect-ratio="1" /> -->
     <Loading />
     <Login />
+    <Forgot />
     <Register />
     <v-toolbar fixed app>
       <v-toolbar-title class="headline text-uppercase">
@@ -59,6 +60,7 @@ import { mapMutations, mapState } from "vuex";
 import Loading from "./components/Loading";
 import Profile from "./components/Profile";
 import Login from "./components/Login";
+import Forgot from './components/Forgot'
 import Register from "./components/Register";
 export default {
   name: "App",
@@ -66,7 +68,8 @@ export default {
     Profile,
     Loading,
     Login,
-    Register
+    Register,
+    Forgot
   },
   created() {},
   computed: {

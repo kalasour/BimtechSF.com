@@ -12,6 +12,7 @@ export default new Vuex.Store({
     Stock: [],
     isLoading: false,
     dialogLogin: false,
+    dialogForgot: false,
     dialogRegister: false,
     isLogin: null,
     user: null,
@@ -227,6 +228,16 @@ export default new Vuex.Store({
         if (auth.currentUser != null) state.dialogLogin = false;
       });
     },
+    Forgot(state, user) {
+      state.isLoading = true
+      auth.sendPasswordResetEmail(user.email).catch(function (error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        user.res(errorMessage)
+      }).then(() => {
+        state.isLoading = false
+      });
+    },
     async Logout(state) {
       window.location.reload()
       auth.signOut()
@@ -244,6 +255,12 @@ export default new Vuex.Store({
     },
     closeLogin(state) {
       state.dialogLogin = false;
+    },
+    closeForgot(state) {
+      state.dialogForgot = false;
+    },
+    openForgot(state) {
+      state.dialogForgot = true;
     },
     setLoading(state, load) {
       state.isLoading = load
