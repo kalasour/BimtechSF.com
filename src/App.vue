@@ -1,11 +1,15 @@
 <template>
-  <v-app >
+  <v-app>
     <!-- :style="{background: '#FCCD8D'}" -->
     <!-- <v-img :src="require('./../src/assets/Logo.jpg')" aspect-ratio="1" /> -->
     <Loading />
     <Login />
     <Forgot />
     <Register />
+    <v-snackbar v-model="snack" color="white" :top="true" :timeout="2000">
+     <span :style="{color:'#454544'}"> {{ snackbarmsg }}</span>
+      <v-btn color="orange" flat @click="snack=false">Close</v-btn>
+    </v-snackbar>
     <v-toolbar dark color="#454544" fixed app>
       <v-toolbar-title class="headline text-uppercase">
         <span>BIMTECHSF</span>
@@ -13,7 +17,7 @@
       </v-toolbar-title>
       <v-btn @click="goto('/POS')" flat>
         <span v-if="this.$route.path!=='/POS'" class="mx-2">P.O.S</span>
-        <span v-else class="mx-2 orange--text ">P.O.S</span>
+        <span v-else class="mx-2 orange--text">P.O.S</span>
       </v-btn>
       <div class="text-xs-center">
         <v-menu open-on-hover offset-y>
@@ -60,7 +64,7 @@ import { mapMutations, mapState } from "vuex";
 import Loading from "./components/Loading";
 import Profile from "./components/Profile";
 import Login from "./components/Login";
-import Forgot from './components/Forgot'
+import Forgot from "./components/Forgot";
 import Register from "./components/Register";
 export default {
   name: "App",
@@ -73,17 +77,25 @@ export default {
   },
   created() {},
   computed: {
-    ...mapState(["Stock", "isLoading", "Categories"])
+    ...mapState(["Stock", "isLoading", "Categories", "snackbar", "snackbarmsg"])
+  },
+  watch: {
+    snack: function() {
+      if (!this.snack) this.closeSnackbar();
+    },
+    snackbar: function() {
+      this.snack = this.snackbar;
+    }
   },
   data() {
-    return {};
+    return { snack: false };
   },
   methods: {
     goto(page) {
       this.$router.push({ path: page });
     },
     handleCate() {},
-    ...mapMutations(["initialize"])
+    ...mapMutations(["initialize", "closeSnackbar"])
   }
 };
 </script>

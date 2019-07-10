@@ -172,7 +172,7 @@
             fab
             right
             top
-            @click="AddToCart(Item)"
+            @click="AddToCart(ID)"
           >
             <v-icon>add_shopping_cart</v-icon>
           </v-btn>

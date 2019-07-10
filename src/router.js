@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import Cate from './views/Category.vue'
 import Manager from './views/Manager.vue'
 import EditProfile from './views/EditProfile.vue'
+import Cart from './views/Cart.vue'
 import { auth } from './firebase'
 import Store from './store'
 Vue.use(Router)
@@ -42,6 +43,12 @@ const router = new Router({
       path: '/Profile/:state',
       name: 'Profile',
       component: EditProfile,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/Cart',
+      name: 'Cart',
+      component: Cart,
       meta: { requiresAuth: true }
     },
     {

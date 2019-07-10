@@ -19,8 +19,17 @@ export default new Vuex.Store({
     userProfile: {},
     Categories: [],
     listCate: [],
+    snackbar: false,
+    snackbarmsg: ''
   },
   mutations: {
+    openSnackbar(state, payload) {
+      state.snackbarmsg = payload
+      state.snackbar = true
+    },
+    closeSnackbar(state, payload) {
+      state.snackbar = false
+    },
     setDefaultAddress(state, payload) {
       firestore.collection('Users').doc(state.user.uid).update({
         defaultAddress: payload
@@ -113,8 +122,26 @@ export default new Vuex.Store({
       state.user = payload.user
       state.userProfile = payload.userProfile
     },
-    AddToCart(state, data) {
-
+    AddToCart(state, payload) {
+      if (state.isLogin) {
+        this.commit('openSnackbar','Added')
+        var findIndex = (state.userProfile.Cart == null ? [] : state.userProfile.Cart).findIndex(element => element.id == payload)
+        if (findIndex == -1) {
+          firestore.collection('Users').doc(state.user.uid).update({
+            Cart: firebase.firestore.FieldValue.arrayUnion({ id: payload, amount: 1 })
+          })
+        }
+        else {
+          var arr = state.userProfile.Cart.slice(0)
+          arr[findIndex].amount++
+          firestore.collection('Users').doc(state.user.uid).update({
+            Cart: arr
+          })
+        }
+      }
+      else {
+        state.dialogLogin = true
+      }
     },
     DeleteItem(state, payload) {
       state.isLoading = true
@@ -267,9 +294,9 @@ export default new Vuex.Store({
       state.isLoading = load
     },
     initialize(state) {
-      state.isLoading = true
+      // state.isLoading = true
       auth.onAuthStateChanged(async user => {
-        state.isLoading = true
+        // state.isLoading = true
         if (user) {
           // User is signed in.
 
@@ -277,7 +304,7 @@ export default new Vuex.Store({
           state.isLogin = true;
           firestore.collection('Users').doc(state.user.uid).onSnapshot(docSnapshot => {
             state.userProfile = docSnapshot.data()
-            state.isLoading = false
+            // state.isLoading = false
           }, err => {
           });
         } else {
@@ -285,19 +312,19 @@ export default new Vuex.Store({
           state.isLogin = false;
           state.user = null
           state.userProfile = {}
-          state.isLoading = false
+          // state.isLoading = false
         }
       });
       firestore.collection('Stock').onSnapshot(async function (querySnapshot) {
-        state.isLoading = true
+        // state.isLoading = true
         state.Stock = [];
         await querySnapshot.forEach((doc) => {
           state.Stock.push(doc)
         })
-        state.isLoading = false
+        // state.isLoading = false
       });
       firestore.collection('Categories').orderBy("name").onSnapshot(async function (querySnapshot) {
-        state.isLoading = true
+        // state.isLoading = true
         state.Categories = [];
         state.listCate = []
         await querySnapshot.forEach(async (doc) => {
@@ -305,7 +332,7 @@ export default new Vuex.Store({
           state.Categories.push(doc)
           var cat = { name: doc.data().name, id: doc.id }
           await doc.ref.collection('sub').onSnapshot((async qr => {
-            state.isLoading = true
+            // state.isLoading = true
             var ch = []
             await qr.forEach(q => {
               ch.push({ name: q.data().name, id: q.id, parent: { id: cat.id, name: cat.name } })
@@ -314,11 +341,11 @@ export default new Vuex.Store({
             var arr = await state.listCate
             await Vue.set(state, 'listCate', []);
             await Vue.set(state, 'listCate', arr)
-            state.isLoading = false
+            // state.isLoading = false
           }))
           state.listCate.push(cat)
         })
-        state.isLoading = false
+        // state.isLoading = false
       });
 
     }

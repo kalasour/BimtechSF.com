@@ -80,7 +80,7 @@ export default {
       });
     },
     async GetTag() {
-      this.setLoading(true);
+      // this.setLoading(true);
       if (this.GetDocFromPath() != null)
         await this.GetDocFromPath()
           .ref.collection("sub")
