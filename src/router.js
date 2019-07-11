@@ -81,7 +81,7 @@ router.beforeEach((to, from, next) => {
     Store.commit('openLogin')
     next(from)
   } else if (requiresAdmin && !isAdmin) {
-    alert('Sorry,we cant access this!')
+    alert('Sorry,we can\'t access this!')
     next(from)
   }
   else {

@@ -139,7 +139,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["updatePersonal"]),
+    ...mapMutations(["updatePersonal","openSnackbar"]),
     getData() {
       this.password = "";
       this.name = this.user.displayName;
@@ -147,8 +147,10 @@ export default {
       this.lastname = this.userProfile.lastname;
     },
     sendEmail() {
-      this.user.sendEmailVerification().then(() => {
-        alert("send Email verified.");
+      this.user.sendEmailVerification().catch(err=>{
+         this.openSnackbar(err.massage);
+      }).then(() => {
+        this.openSnackbar("send Email verified.");
       });
     },
     submit() {

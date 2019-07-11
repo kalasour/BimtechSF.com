@@ -6,7 +6,13 @@
       </v-card-title>
       <v-divider inset class="mx-auto"></v-divider>
       <v-card-text>
-        <v-data-table select-all hide-actions v-model="selected" :headers="headers" :items="getList">
+        <v-data-table
+          select-all
+          hide-actions
+          v-model="selected"
+          :headers="headers"
+          :items="getList"
+        >
           <template v-slot:headers="props">
             <tr>
               <th width="1%">
@@ -23,15 +29,59 @@
                 :align="header.align"
                 v-for="header in props.headers"
                 :key="header.text"
-              >{{ header.text }}</th>
+              >
+                <span class="subheading">{{ header.text }}</span>
+              </th>
             </tr>
           </template>
           <template v-slot:items="props">
-            <tr :active="props.selected" @click="props.selected = !props.selected">
-              <td>
+            <tr :active="props.selected">
+              <td @click="props.selected = !props.selected">
                 <v-checkbox :input-value="props.selected" color="orange" hide-details></v-checkbox>
               </td>
-              <td>{{ props.item }}</td>
+              <td>
+                <v-layout class="my-2" row wrap>
+                  <v-img
+                    max-width="75"
+                    max-height="75"
+                    :src="props.item.imgs==null?'':props.item.imgs[0]"
+                    aspect-ratio="1"
+                  >
+                    <template v-slot:placeholder>
+                      <v-layout fill-height align-center justify-center ma-0>
+                        <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                      </v-layout>
+                    </template>
+                  </v-img>
+                  <span class="mt-2 ml-2 text-truncate">{{ props.item.name }}</span>
+                </v-layout>
+              </td>
+              <td class="text-xs-center subheading">{{ props.item.price }}</td>
+              <td class="text-xs-center subheading">
+                <v-layout row wrap>
+                  <v-icon
+                    :disabled="props.item.amount<=1"
+                    :style="{cursor:'pointer'}"
+                    @click="decreaseAmount(props.item.id)"
+                  >remove</v-icon>
+                  <v-text-field
+                    :style="{width:'10px'}"
+                    color="orange"
+                    placeholder="0"
+                    class="centered-input"
+                    v-model="props.item.amount"
+                    type="number"
+                    @blur="updateCart"
+                  ></v-text-field>
+                  <v-icon :style="{cursor:'pointer'}" @click="increaseAmount(props.item.id)">add</v-icon>
+                </v-layout>
+              </td>
+              <td
+                class="text-xs-center subheading orange--text"
+              >{{ props.item.amount * props.item.price}}</td>
+              <td class="text-xs-center red--text">
+                <v-icon :style="{cursor:'pointer'}">delete</v-icon>
+              </td>
             </tr>
           </template>
         </v-data-table>
@@ -40,22 +90,29 @@
     {{selected}}
   </div>
 </template>
+<style>
+.centered-input input {
+  max-height: 32px;
+  text-align: center;
+}
+</style>
 
 <script>
 import { mapState, mapMutations } from "vuex";
 export default {
   components: {},
   computed: {
-    ...mapState(["userProfile"]),
+    ...mapState(["userProfile", "Cart"]),
     getList() {
       try {
-        return this.userProfile.Cart;
+        return this.Cart
       } catch {
         return [];
       }
     }
   },
   methods: {
+    ...mapMutations(["updateCart", "increaseAmount", "decreaseAmount"]),
     toggleAll() {
       if (this.selected.length) this.selected = [];
       else this.selected = this.getList;

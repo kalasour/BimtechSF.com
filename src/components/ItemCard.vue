@@ -256,11 +256,12 @@ export default {
       "DeletePictureItem",
       "CreateItem",
       "UpdateItem",
-      "DeleteItem"
+      "DeleteItem",
+      "openSnackbar"
     ]),
     AddHandle() {
       if (this.url == "") {
-        alert("please insert url");
+        this.openSnackbar("please insert url");
         return;
       }
       this.imgs.push(this.url);

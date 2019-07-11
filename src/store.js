@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import { firestore, auth, storage } from './firebase'
 import firebase from './firebase'
 import router from './router'
+import { async } from '@firebase/util';
 const uuidv1 = require('uuid/v1');
 Vue.use(Vuex)
 
@@ -10,6 +11,7 @@ export default new Vuex.Store({
 
   state: {
     Stock: [],
+    Cart: [],
     isLoading: false,
     dialogLogin: false,
     dialogForgot: false,
@@ -20,9 +22,31 @@ export default new Vuex.Store({
     Categories: [],
     listCate: [],
     snackbar: false,
-    snackbarmsg: ''
+    snackbarmsg: '',
   },
   mutations: {
+    increaseAmount(state, payload) {
+      firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).update({
+        amount: firebase.firestore.FieldValue.increment(1)
+      })
+    },
+    decreaseAmount(state, payload) {
+      firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).update({
+        amount: firebase.firestore.FieldValue.increment(-1)
+      })
+    },
+    async updateCart(state) {
+      await state.userProfile.Cart.map((item) => {
+        item.amount = parseInt(item.amount)
+        if (item.amount < 0 || item.amount == '') item.amount = 0
+      })
+      firestore.collection('Users').doc('555').get().then(item => {
+        console.log(item.exists)
+      })
+      firestore.collection('Users').doc(state.user.uid).update({
+        Cart: state.userProfile.Cart
+      })
+    },
     openSnackbar(state, payload) {
       state.snackbarmsg = payload
       state.snackbar = true
@@ -55,7 +79,7 @@ export default new Vuex.Store({
           payload.res()
         }).catch(err => {
           state.isLoading = false
-          alert(err.message)
+          this.commit('openSnackbar', err.message)
         })
       } else {
         var Arr = state.userProfile.Address.slice(0)
@@ -67,7 +91,7 @@ export default new Vuex.Store({
           payload.res()
         }).catch(err => {
           state.isLoading = false
-          alert(err.message)
+          this.commit('openSnackbar', err.message)
         })
       }
     },
@@ -124,20 +148,23 @@ export default new Vuex.Store({
     },
     AddToCart(state, payload) {
       if (state.isLogin) {
-        this.commit('openSnackbar','Added')
-        var findIndex = (state.userProfile.Cart == null ? [] : state.userProfile.Cart).findIndex(element => element.id == payload)
-        if (findIndex == -1) {
-          firestore.collection('Users').doc(state.user.uid).update({
-            Cart: firebase.firestore.FieldValue.arrayUnion({ id: payload, amount: 1 })
-          })
-        }
-        else {
-          var arr = state.userProfile.Cart.slice(0)
-          arr[findIndex].amount++
-          firestore.collection('Users').doc(state.user.uid).update({
-            Cart: arr
-          })
-        }
+
+        firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).get().then(snap => {
+          this.commit('openSnackbar', 'Added')
+
+          if (snap.exists) {
+            snap.ref.update({
+              amount: firebase.firestore.FieldValue.increment(1)
+            })
+          } else {
+            snap.ref.set({
+              amount: 1,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+          }
+        })
+
+
       }
       else {
         state.dialogLogin = true
@@ -302,8 +329,24 @@ export default new Vuex.Store({
 
           state.user = user
           state.isLogin = true;
-          firestore.collection('Users').doc(state.user.uid).onSnapshot(docSnapshot => {
-            state.userProfile = docSnapshot.data()
+          firestore.collection('Users').doc(state.user.uid).onSnapshot(async docSnapshot => {
+            state.userProfile = await docSnapshot.data()
+            docSnapshot.ref.collection('Cart').orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+              var temp = state.Cart.slice(0)
+              state.Cart = []
+              snapshot.forEach(async doc => {
+                var be = temp.find((ele) => ele.id == doc.id)
+                var obj = await Object.assign(be == null ? {} : be, doc.data())
+                obj.id = await doc.id
+                await firestore.collection('Stock').doc(doc.id).onSnapshot(async snap => {
+                  obj = Object.assign(obj, snap.data())
+                  var arr = await state.Cart
+                  await Vue.set(state, 'Cart', []);
+                  await Vue.set(state, 'Cart', arr)
+                })
+                state.Cart.push(obj)
+              })
+            })
             // state.isLoading = false
           }, err => {
           });

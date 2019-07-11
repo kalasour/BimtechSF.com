@@ -25,9 +25,10 @@ Vue.use(VuetifyConfirm, {
 
 Vue.config.productionTip = false
 store.commit('initialize')
+
 const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
   if (firebaseUser) {
-    var userProfile={}
+    var userProfile = {}
     await firestore.collection('Users').doc(firebaseUser.uid).get().then(docSnapshot => {
       userProfile = docSnapshot.data()
     });
