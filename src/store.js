@@ -30,21 +30,23 @@ export default new Vuex.Store({
         amount: firebase.firestore.FieldValue.increment(1)
       })
     },
+    deleteCart(state, payload) {
+      firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).delete()
+    },
     decreaseAmount(state, payload) {
       firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).update({
         amount: firebase.firestore.FieldValue.increment(-1)
       })
     },
-    async updateCart(state) {
-      await state.userProfile.Cart.map((item) => {
-        item.amount = parseInt(item.amount)
-        if (item.amount < 0 || item.amount == '') item.amount = 0
-      })
-      firestore.collection('Users').doc('555').get().then(item => {
-        console.log(item.exists)
-      })
-      firestore.collection('Users').doc(state.user.uid).update({
-        Cart: state.userProfile.Cart
+    async updateCartAmount(state, payload) {
+      if (payload.value <= 0 || payload.value == '') payload.value = 1
+      try {
+        payload.value = parseInt(payload.value)
+      } catch{
+        payload.value = 1
+      }
+      firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload.id).update({
+        amount: payload.value
       })
     },
     openSnackbar(state, payload) {
@@ -149,21 +151,19 @@ export default new Vuex.Store({
     AddToCart(state, payload) {
       if (state.isLogin) {
 
-        firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).get().then(snap => {
-          this.commit('openSnackbar', 'Added')
 
-          if (snap.exists) {
-            snap.ref.update({
-              amount: firebase.firestore.FieldValue.increment(1)
-            })
-          } else {
-            snap.ref.set({
-              amount: 1,
-              createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            })
-          }
-        })
 
+        if (state.Cart.findIndex((ele) => ele.id == payload) != -1) {
+          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).update({
+            amount: firebase.firestore.FieldValue.increment(1)
+          })
+        } else {
+          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).set({
+            amount: 1,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
+        }
+        this.commit('openSnackbar', 'Added')
 
       }
       else {

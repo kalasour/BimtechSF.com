@@ -47,10 +47,14 @@ export default {
   data: () => ({}),
   components: {},
   computed: {
-    ...mapState(["user", "isLogin", "userProfile"]),
+    ...mapState(["user", "isLogin", "userProfile", "Cart"]),
     numItem() {
       try {
-        return this.userProfile.Cart.length;
+        return this.Cart.reduce((sum, number) => {
+          return (
+            parseInt(sum) + (number.amount == "" ? 0 : parseInt(number.amount))
+          );
+        }, 0);
       } catch {
         return 0;
       }

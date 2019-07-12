@@ -34,6 +34,11 @@
               </th>
             </tr>
           </template>
+          <template v-slot:no-data>
+            <v-layout row wrap justify-center>
+                <span class="text-xs-center">You cart is empty.</span>
+            </v-layout>
+          </template>
           <template v-slot:items="props">
             <tr :active="props.selected">
               <td @click="props.selected = !props.selected">
@@ -45,6 +50,7 @@
                     max-width="75"
                     max-height="75"
                     :src="props.item.imgs==null?'':props.item.imgs[0]"
+                    :lazy-src="props.item.imgs==null?'':props.item.imgs[0]"
                     aspect-ratio="1"
                   >
                     <template v-slot:placeholder>
@@ -67,11 +73,10 @@
                   <v-text-field
                     :style="{width:'10px'}"
                     color="orange"
-                    placeholder="0"
                     class="centered-input"
                     v-model="props.item.amount"
-                    type="number"
-                    @blur="updateCart"
+                    @keypress="isNumber"
+                    @blur="changeAmount($event,props.item.id,props.item)"
                   ></v-text-field>
                   <v-icon :style="{cursor:'pointer'}" @click="increaseAmount(props.item.id)">add</v-icon>
                 </v-layout>
@@ -80,7 +85,7 @@
                 class="text-xs-center subheading orange--text"
               >{{ props.item.amount * props.item.price}}</td>
               <td class="text-xs-center red--text">
-                <v-icon :style="{cursor:'pointer'}">delete</v-icon>
+                <v-icon :style="{cursor:'pointer'}" @click="onDelete(props.item.id)">delete</v-icon>
               </td>
             </tr>
           </template>
@@ -99,23 +104,45 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import vue from "vue";
 export default {
   components: {},
   computed: {
     ...mapState(["userProfile", "Cart"]),
     getList() {
       try {
-        return this.Cart
+        return this.Cart;
       } catch {
         return [];
       }
     }
   },
   methods: {
-    ...mapMutations(["updateCart", "increaseAmount", "decreaseAmount"]),
+    ...mapMutations([
+      "updateCartAmount",
+      "increaseAmount",
+      "decreaseAmount",
+      "deleteCart"
+    ]),
     toggleAll() {
       if (this.selected.length) this.selected = [];
       else this.selected = this.getList;
+    },
+    onDelete(id) {
+      this.$confirm("Do you really want to delete?").then(res => {
+        if (res) this.deleteCart(id);
+      });
+    },
+    isNumber(event) {
+      var ch = String.fromCharCode(event.which);
+      if (!/[1-9]/.test(ch)) {
+        event.preventDefault();
+      }
+    },
+    changeAmount(event, id, item) {
+      if (event.target.value <= 0 || event.target.value == "") item.amount = 1;
+      var payload = { value: event.target.value, id: id };
+      this.updateCartAmount(payload);
     }
   },
   data() {
