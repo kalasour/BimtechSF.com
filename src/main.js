@@ -22,7 +22,7 @@ Vue.use(VuetifyConfirm, {
   width: 350,
   property: '$confirm'
 })
-
+Vue.config.performance = true
 Vue.config.productionTip = false
 store.commit('initialize')
 

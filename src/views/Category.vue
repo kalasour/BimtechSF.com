@@ -25,7 +25,7 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 sm6 md10>
-        <ItemCard v-for="item in list" :key="item.id" :ID="item.id" :Item="item.data()"/>
+        <ItemCard v-for="item in list" :key="item.id" :ID="item.id" :Item="item.data()" />
       </v-flex>
     </v-layout>
   </v-container>
@@ -34,12 +34,19 @@
 <script>
 import { mapMutations, mapState } from "vuex";
 export default {
-  created() {},
+  created() {
+    this.GetTag();
+  },
 
   computed: {
-    ...mapState(["Stock", "Categories"]),
+    ...mapState(["Stock", "listCate"]),
     list: function() {
       return this.GetData();
+    },
+    GetDocFromPath() {
+      return this.listCate.find(
+        ele => ele.name == this.$route.params.pathMatch
+      );
     }
   },
   data() {
@@ -51,6 +58,10 @@ export default {
   watch: {
     "$route.params.pathMatch": function() {
       this.subKey = null;
+      this.GetTag();
+    },
+    "GetDocFromPath.children": function() {
+      this.GetTag();
     }
   },
   methods: {
@@ -58,22 +69,14 @@ export default {
     SetSubKey(key) {
       this.subKey = key;
     },
-    GetKeyFromPath() {
-      this.GetTag();
-      return this.Categories.map(item => {
-        if (this.$route.params.pathMatch == item.data().name) return item.id;
-      }).filter(element => element != null)[0];
-    },
-    GetDocFromPath() {
-      return this.Categories.map(item => {
-        if (this.$route.params.pathMatch == item.data().name) return item;
-      }).filter(element => element != null)[0];
-    },
+
     GetData() {
       return this.Stock.filter(element => {
         var el = element.data();
         return (
-          el.tag.indexOf(this.GetKeyFromPath()) != -1 &&
+          el.tag.indexOf(
+            this.GetDocFromPath == null ? "" : this.GetDocFromPath.id
+          ) != -1 &&
           (this.subKey == null || el.tag.indexOf(this.subKey) != -1) &&
           el.isDisabled != true
         );
@@ -81,17 +84,23 @@ export default {
     },
     async GetTag() {
       // this.setLoading(true);
-      if (this.GetDocFromPath() != null)
-        await this.GetDocFromPath()
-          .ref.collection("sub")
-          .onSnapshot(async querySnapshot => {
-            this.subcate = [];
-            await querySnapshot.forEach(doc => {
-              // console.log(doc.data().name);
-              this.subcate.push({ name: doc.data().name, id: doc.id });
-            });
-            this.setLoading(false);
+      if (this.GetDocFromPath != null)
+        if (this.GetDocFromPath.children != null) {
+          this.subcate = [];
+          this.GetDocFromPath.children.map(item => {
+            this.subcate.push(item);
           });
+        }
+      //   await this.GetDocFromPath()
+      //     .ref.collection("sub")
+      //     .onSnapshot(async querySnapshot => {
+      //       this.subcate = [];
+      //       await querySnapshot.forEach(doc => {
+      //         // console.log(doc.data().name);
+      //         this.subcate.push({ name: doc.data().name, id: doc.id });
+      //       });
+      //       this.setLoading(false);
+      //     });
       // console.log(data)
     }
   }

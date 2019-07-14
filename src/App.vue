@@ -7,7 +7,7 @@
     <Forgot />
     <Register />
     <v-snackbar v-model="snack" color="white" :top="true" :timeout="2000">
-     <span :style="{color:'#454544'}"> {{ snackbarmsg }}</span>
+      <span :style="{color:'#454544'}">{{ snackbarmsg }}</span>
       <v-btn color="orange" flat @click="snack=false">Close</v-btn>
     </v-snackbar>
     <v-toolbar dark color="#454544" fixed app>
@@ -56,6 +56,39 @@
     <v-content>
       <router-view></router-view>
     </v-content>
+    <v-footer v-if="$route.path!='/Manager'" light height="auto">
+      <v-card class="flex" flat tile>
+        <v-card-title class="white">
+          <v-layout row wrap justify-space-around>
+            <v-flex xs2>
+              <strong>ABOUT OUR STORE</strong>
+              <v-divider></v-divider>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+            </v-flex>
+            <v-flex xs2>
+              <strong>QUICK LINKS</strong>
+              <v-divider></v-divider>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+            </v-flex>
+            <v-flex xs2>
+              <strong>GET IN TOUCH</strong>
+              <v-divider></v-divider>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+            </v-flex>
+            <v-flex xs2>
+              <strong>CONNECT WITH US</strong>
+              <v-divider></v-divider>
+              <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+            </v-flex>
+          </v-layout>
+        </v-card-title>
+        <v-divider class="mx-5"></v-divider>
+        <v-card-actions class="darken-3 justify-center">
+          &copy;2018 —
+          <strong>Vuetify</strong>
+        </v-card-actions>
+      </v-card>
+    </v-footer>
   </v-app>
 </template>
 

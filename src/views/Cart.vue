@@ -48,20 +48,24 @@
                   </td>
                   <td>
                     <v-layout class="my-2" row wrap>
-                      <v-img
-                        max-width="75"
-                        max-height="75"
-                        :src="props.item.imgs==null?'':props.item.imgs[0]"
-                        :lazy-src="props.item.imgs==null?'':props.item.imgs[0]"
-                        aspect-ratio="1"
-                      >
-                        <template v-slot:placeholder>
-                          <v-layout fill-height align-center justify-center ma-0>
-                            <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                          </v-layout>
-                        </template>
-                      </v-img>
-                      <span class="mt-2 ml-2 text-truncate">{{ props.item.name }}</span>
+                      <v-flex xs3>
+                        <v-img
+                          max-width="75"
+                          max-height="75"
+                          :src="props.item.imgs==null?'':props.item.imgs[0]"
+                          :lazy-src="props.item.imgs==null?'':props.item.imgs[0]"
+                          aspect-ratio="1"
+                        >
+                          <template v-slot:placeholder>
+                            <v-layout fill-height align-center justify-center ma-0>
+                              <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                            </v-layout>
+                          </template>
+                        </v-img>
+                      </v-flex>
+                      <v-flex xs9>
+                        <p class="mt-2 ml-2 text-truncate">{{ props.item.name }}</p>
+                      </v-flex>
                     </v-layout>
                   </td>
                   <td class="text-xs-center subheading">${{ props.item.price }}</td>

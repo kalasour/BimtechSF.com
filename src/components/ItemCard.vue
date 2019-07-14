@@ -126,18 +126,31 @@
         :class="`elevation-${hover ? 12 : 2}`"
         class="mx-3 left my-3"
         width="300"
+        height="350"
       >
         <v-img
           :aspect-ratio="16/9"
           :src="Item.imgs==null?'https://via.placeholder.com/350':Item.imgs[0]"
+          :lazy-src="Item.img==null?'':Item.img"
         >
+          <template v-slot:placeholder>
+            <v-layout fill-height align-center justify-center ma-0>
+              <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+            </v-layout>
+          </template>
           <v-expand-transition v-if="Item.imgs!=null">
             <div
               v-if="hover&&Item.imgs[1]!=null"
               class="d-flex transition-fast-in-fast-out white darken-2 v-card--reveal display-3 white--text"
               style="height: 100%;"
             >
-              <v-img :aspect-ratio="16/9" :src="Item.imgs[1]"></v-img>
+              <v-img :aspect-ratio="16/9" :lazy-src="Item.img==null?'':Item.img" :src="Item.imgs[1]">
+                <template v-slot:placeholder>
+                  <v-layout fill-height align-center justify-center ma-0>
+                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                  </v-layout>
+                </template>
+              </v-img>
             </div>
           </v-expand-transition>
           <v-btn
@@ -176,12 +189,13 @@
           >
             <v-icon>add_shopping_cart</v-icon>
           </v-btn>
-          <v-responsive :aspect-ratio="16/4">
-            <h4 class="headline font-weight-light mb-2">{{Item.name}}</h4>
-          </v-responsive>
-          <div
-            class="font-weight-light grey--text subheading mb-2"
-          >Description : {{Item.description}}</div>
+          <!-- <v-responsive :aspect-ratio="16/4"> -->
+          <h4 class="headline font-weight-light mb-2 text-truncate">{{Item.name}}</h4>
+          <!-- </v-responsive> -->
+          <div class="font-weight-light grey--text subheading mb-2">
+            Description :
+            <p class="text-truncate mb-0">{{Item.description}}</p>
+          </div>
           <h3 class="display-1 font-weight-light orange--text mb-2">{{Item.price}} $</h3>
         </v-card-text>
       </v-card>
@@ -192,7 +206,7 @@
         v-else
         class="justify-center mx-3 left my-3"
         width="300"
-        height="360"
+        height="350"
       >
         <div class="mt-5">
           <v-img contain max-height="125" :src="require('./../assets/add.png')"></v-img>
