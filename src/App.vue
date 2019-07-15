@@ -6,6 +6,7 @@
     <Login />
     <Forgot />
     <Register />
+    <EditItem />
     <v-snackbar v-model="snack" color="white" :top="true" :timeout="2000">
       <span :style="{color:'#454544'}">{{ snackbarmsg }}</span>
       <v-btn color="orange" flat @click="snack=false">Close</v-btn>
@@ -99,6 +100,7 @@ import Profile from "./components/Profile";
 import Login from "./components/Login";
 import Forgot from "./components/Forgot";
 import Register from "./components/Register";
+import EditItem from "./components/EditItem";
 export default {
   name: "App",
   components: {
@@ -106,7 +108,8 @@ export default {
     Loading,
     Login,
     Register,
-    Forgot
+    Forgot,
+    EditItem
   },
   created() {},
   computed: {

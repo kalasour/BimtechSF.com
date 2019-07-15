@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="userProfile.isAdmin">
     <StockPage v-if="bottomNav==0" />
     <v-footer></v-footer>
     <v-bottom-nav fixed :active.sync="bottomNav" :color="color" :value="true"  dark shift>

@@ -13,6 +13,8 @@ export default new Vuex.Store({
     Stock: [],
     Cart: [],
     isLoading: false,
+    dialogEditItem: false,
+    selectedItem: {},
     dialogLogin: false,
     dialogForgot: false,
     dialogRegister: false,
@@ -25,6 +27,14 @@ export default new Vuex.Store({
     snackbarmsg: '',
   },
   mutations: {
+    closeDialogEditItem(state) {
+      state.dialogEditItem = false;
+      if (state.selectedItem.id) state.selectedItem = {};
+    },
+    editItem(state, payload) {
+      state.selectedItem = Object.assign({}, payload)
+      state.dialogEditItem = true;
+    },
     increaseAmount(state, payload) {
       firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).update({
         amount: firebase.firestore.FieldValue.increment(1)
@@ -172,7 +182,7 @@ export default new Vuex.Store({
     },
     DeleteItem(state, payload) {
       state.isLoading = true
-      storage.ref(payload).listAll().then(res => {
+      storage.ref('Stock/'+payload).listAll().then(res => {
         res.items.forEach(itemRef => {
           itemRef.delete()
         })

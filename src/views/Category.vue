@@ -37,7 +37,6 @@ export default {
   created() {
     this.GetTag();
   },
-
   computed: {
     ...mapState(["Stock", "listCate"]),
     list: function() {
