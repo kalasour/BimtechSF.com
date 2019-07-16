@@ -8,6 +8,7 @@
               :key="`${n}-step`"
               :complete="e1 > n"
               :step="n"
+              color="orange"
               :editable="!(selectedItem.id==null)"
             >{{ stepHeader[n-1] }}</v-stepper-step>
 
@@ -30,7 +31,14 @@
                 <v-switch label="Disable" v-model="isOff"></v-switch>
               </v-flex>
               <v-flex xs12>
-                <v-text-field v-model="selectedItem.description" label="Description" required></v-text-field>
+                <v-textarea
+                  v-model="selectedItem.description"
+                  label="Description"
+                  required
+                  auto-grow
+                  hide-details
+                  rows="2"
+                ></v-textarea>
               </v-flex>
               <v-flex v-if="listCate!=[]" xs12 sm6 md6>
                 <v-autocomplete
@@ -54,6 +62,79 @@
               </v-flex>
             </v-layout>
             <v-container v-if="n==2&&selectedItem.id" grid-list-sm fluid>
+              <v-dialog width="400" v-model="newOption">
+                <v-card>
+                  <v-card-title>
+                    <p class="title">New Option</p>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-text-field color="orange" label="Option name" v-model="newOptionName"></v-text-field>
+                    <p v-if="errNewOption!=''" class="red--text">{{errNewOption}}</p>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-layout row wrap>
+                      <v-spacer></v-spacer>
+                      <v-btn @click="createOption" color="secondary">Create</v-btn>
+                      <v-btn @click="newOption=false" flat>Cancel</v-btn>
+                    </v-layout>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <div v-if="selectedItem.Options!=null">
+                <div v-for="key in Object.keys(selectedItem.Options)" :key="key">
+                  <p class="subheading mb-0">
+                    {{key}} :
+                    <v-icon
+                      :style="{cursor:'pointer'}"
+                      small
+                      class="ml-3"
+                      @click="()=>{
+                    selectedItem.Options[key].push({})
+         selectedItem.Options=Object.assign({},selectedItem.Options)
+                    }"
+                    >add</v-icon>
+                    <v-icon
+                      :style="{cursor:'pointer'}"
+                      small
+                      @click="()=>{
+                    $confirm('Do you really want to delete this option?').then(res => {
+        if (res) {
+         delete selectedItem.Options[key]
+         selectedItem.Options=Object.assign({},selectedItem.Options)
+        }
+      })
+                    }"
+                      class="ml-1"
+                    >remove</v-icon>
+                  </p>
+                  <v-layout
+                    class="ml-5"
+                    v-for="(option,index) in selectedItem.Options[key]"
+                    :key="index"
+                    row
+                    wrap
+                    align-center
+                  >
+                    <v-flex class="mr-3" xs6>
+                      <v-text-field color="orange" v-model="option.name" label="Name"></v-text-field>
+                    </v-flex>
+                    <span class="orange--text subheading">$</span>
+                    <v-flex xs2>
+                      <v-text-field
+                        color="orange"
+                        type="number"
+                        v-model="option.price"
+                        label="More price"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                </div>
+              </div>
+              <v-flex xs12>
+                <v-btn @click="newOption=true" color="secondary">Create option</v-btn>
+              </v-flex>
+            </v-container>
+            <v-container v-if="n==3&&selectedItem.id" grid-list-sm fluid>
               <draggable v-model="imgs" class="layout row wrap">
                 <v-flex d-flex xs3 v-for="(item,index) in imgs" :key="index">
                   <v-hover>
@@ -89,7 +170,12 @@
               <v-flex xs12>
                 <v-layout row wrap align-center class="my-2">
                   <v-flex xs2>
-                    <upload-btn ref="button" @file-update="fileHandle" type="image"></upload-btn>
+                    <upload-btn
+                      color="secondary"
+                      ref="button"
+                      @file-update="fileHandle"
+                      type="image"
+                    ></upload-btn>
                   </v-flex>
                   <v-flex xs1>
                     <p class="ma-1 text-xs-center title grey--text justify-center">or</p>
@@ -97,17 +183,19 @@
                   <v-flex xs9>
                     <v-layout row wrap>
                       <v-text-field class="pa-0 mx-2" v-model="url" label="Image url" hide-details></v-text-field>
-                      <v-btn @click="AddHandle()">Add</v-btn>
+                      <v-btn color="secondary" @click="AddHandle()">Add</v-btn>
                     </v-layout>
                   </v-flex>
                 </v-layout>
               </v-flex>
             </v-container>
+            <v-layout row wrap>
+              <v-spacer></v-spacer>
+              <v-btn v-if="!selectedItem.id" color="orange white--text" @click="createItem()">Create</v-btn>
+              <v-btn v-else color="orange white--text" @click="updateItem()">Continue</v-btn>
 
-            <v-btn v-if="!selectedItem.id" color="primary" @click="createItem()">Create</v-btn>
-            <v-btn v-else color="primary" @click="updateItem()">Continue</v-btn>
-
-            <v-btn flat @click="close">Cancel</v-btn>
+              <v-btn flat @click="close">Cancel</v-btn>
+            </v-layout>
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -124,12 +212,15 @@ export default {
   data() {
     return {
       isOff: false,
-      stepHeader: ["Information", "Image"],
+      stepHeader: ["Information", "Option", "Image"],
       e1: 1,
-      steps: 2,
+      steps: 3,
       imgs: [],
       deleteList: [],
-      url: ""
+      url: "",
+      newOption: false,
+      newOptionName: "",
+      errNewOption: ""
     };
   },
   watch: {
@@ -143,6 +234,10 @@ export default {
         this.deleteList = [];
         this.imgs = Object.assign([], this.selectedItem.imgs);
         this.isOff = !!this.selectedItem.isDisabled;
+        this.selectedItem.Options = Object.assign(
+          {},
+          this.selectedItem.Options
+        );
       }
     }
   },
@@ -166,6 +261,17 @@ export default {
       "CreateItem",
       "UpdateItem"
     ]),
+    createOption() {
+      if (this.selectedItem.Options == null) this.selectedItem.Options = {};
+      if (this.selectedItem.Options[this.newOptionName] == null) {
+        this.selectedItem.Options[this.newOptionName] = [];
+        this.newOption = false;
+        this.newOptionName = "";
+        this.errNewOption = "";
+      } else {
+        this.errNewOption = "Duplicate name";
+      }
+    },
     close() {
       this.e1 = 1;
       this.closeDialogEditItem();
@@ -196,8 +302,8 @@ export default {
         call: id => {
           this.selectedItem.id = id;
           this.e1++;
-          if (this.e1 > 2) {
-            this.close()
+          if (this.e1 > this.steps) {
+            this.close();
           }
         }
       });
