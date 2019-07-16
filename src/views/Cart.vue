@@ -64,11 +64,17 @@
                         </v-img>
                       </v-flex>
                       <v-flex xs9>
-                        <p class="mt-2 ml-2 text-truncate">{{ props.item.name }}</p>
+                        <p
+                          v-if="props.item.name!=null"
+                          class="mt-2 ml-2 text-truncate"
+                        >{{ props.item.name }}</p>
+                        <p v-else class="mt-2 ml-2 text-truncate orange--text">Loading...</p>
                       </v-flex>
                     </v-layout>
                   </td>
-                  <td class="text-xs-center subheading">${{ props.item.price }}</td>
+                  <td
+                    class="text-xs-center subheading"
+                  >${{ props.item.price==null?0:props.item.price }}</td>
                   <td class="text-xs-center subheading">
                     <v-layout row wrap>
                       <v-icon
@@ -94,7 +100,7 @@
                   </td>
                   <td
                     class="text-xs-center subheading orange--text"
-                  >${{ props.item.amount * props.item.price}}</td>
+                  >${{ props.item.amount * (props.item.price==null?0:props.item.price)}}</td>
                   <td class="text-xs-center red--text">
                     <v-icon :style="{cursor:'pointer'}" @click="onDelete(props.item.id)">delete</v-icon>
                   </td>

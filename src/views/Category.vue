@@ -25,6 +25,15 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 sm6 md10>
+        <v-flex xs12 sm6 md3>
+          <v-text-field
+            color="orange"
+            hide-details
+            prepend-icon="search"
+            label="Search"
+            v-model="Search"
+          ></v-text-field>
+        </v-flex>
         <ItemCard v-for="item in list" :key="item.id" :ID="item.id" :Item="item.data()" />
       </v-flex>
     </v-layout>
@@ -36,11 +45,18 @@ import { mapMutations, mapState } from "vuex";
 export default {
   created() {
     this.GetTag();
+    this.Search = "";
   },
   computed: {
     ...mapState(["Stock", "listCate"]),
     list: function() {
-      return this.GetData();
+      return this.GetData().filter(
+        ele =>
+          ele
+            .data()
+            .name.toLowerCase()
+            .search(this.Search.toLowerCase()) != -1
+      ).sort((item1,item2)=> item1.data().name.localeCompare(item2.data().name));
     },
     GetDocFromPath() {
       return this.listCate.find(
@@ -51,15 +67,18 @@ export default {
   data() {
     return {
       subKey: null,
-      subcate: []
+      subcate: [],
+      Search: ""
     };
   },
   watch: {
     "$route.params.pathMatch": function() {
       this.subKey = null;
+      this.Search = "";
       this.GetTag();
     },
     "GetDocFromPath.children": function() {
+      this.Search = "";
       this.GetTag();
     }
   },
