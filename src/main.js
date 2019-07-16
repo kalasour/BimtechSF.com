@@ -12,7 +12,6 @@ import { Store } from 'vuex';
 Vue.component('draggable', draggable)
 Vue.component('ItemCard', ItemCard)
 Vue.component('upload-btn', UploadButton)
-
 Vue.use(VuetifyConfirm, {
   buttonTrueText: 'Accept',
   buttonFalseText: 'Discard',

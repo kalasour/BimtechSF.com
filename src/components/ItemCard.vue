@@ -12,7 +12,6 @@
         <v-img
           :aspect-ratio="16/9"
           :src="Item.imgs==null?'https://via.placeholder.com/350':Item.imgs[0]"
-          :lazy-src="Item.img==null?'':Item.img"
         >
           <template v-slot:placeholder>
             <v-layout fill-height align-center justify-center ma-0>
@@ -27,7 +26,6 @@
             >
               <v-img
                 :aspect-ratio="16/9"
-                :lazy-src="Item.img==null?'':Item.img"
                 :src="Item.imgs[1]"
               >
                 <template v-slot:placeholder>

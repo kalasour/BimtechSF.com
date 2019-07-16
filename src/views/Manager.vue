@@ -3,12 +3,12 @@
     <StockPage v-if="bottomNav==0" />
     <v-footer></v-footer>
     <v-bottom-nav fixed :active.sync="bottomNav" :color="color" :value="true"  dark shift>
-      <v-btn dark @click="goto('/Manager/Stock')">
+      <v-btn dark to="/Manager/Stock">
         <span>Stocks</span>
         <v-icon>table_chart</v-icon>
       </v-btn>
 
-      <v-btn dark @click="goto('/Manager/User')">
+      <v-btn dark to="/Manager/User">
         <span>Users</span>
         <v-icon>person</v-icon>
       </v-btn>
@@ -76,14 +76,6 @@ export default {
   },
   methods: {
     ...mapMutations(['setLoading']),
-    goto(page) {
-      this.$router.push({ path: page });
-    },
-    // Authen() {
-    //   if (!this.userProfile.isAdmin) {
-    //     this.$router.push({ path: "/RestaurantSupply/DISPOSABLE" });
-    //   }
-    // }
   }
 };
 </script>

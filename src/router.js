@@ -7,6 +7,7 @@ import EditProfile from './views/EditProfile.vue'
 import Cart from './views/Cart.vue'
 import { auth } from './firebase'
 import Store from './store'
+import NProgress from 'nprogress'
 Vue.use(Router)
 const router = new Router({
   mode: 'history',
@@ -66,6 +67,8 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     }
   ]
+})
+router.afterEach(() => {
 })
 router.beforeEach((to, from, next) => {
   const requiresAuth = to

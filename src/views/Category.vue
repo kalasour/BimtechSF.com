@@ -25,18 +25,36 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 sm6 md10>
-        <v-flex xs12 sm6 md3>
-          <v-text-field
-            color="orange"
-            hide-details
-            prepend-icon="search"
-            label="Search"
-            v-model="Search"
-          ></v-text-field>
-        </v-flex>
+        <v-layout row wrap>
+          <v-flex xs12 sm6 md3>
+            <v-text-field
+              color="orange"
+              hide-details
+              prepend-icon="search"
+              label="Search"
+              v-model="Search"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm6 md1>
+            <v-select
+              color="orange"
+              :items="[30,60,300]"
+              v-model="itemPerpage"
+              label="Item per page"
+            ></v-select>
+          </v-flex>
+        </v-layout>
         <ItemCard v-for="item in list" :key="item.id" :ID="item.id" :Item="item.data()" />
       </v-flex>
     </v-layout>
+    <div class="text-xs-center">
+      <v-pagination
+        v-model="page"
+        color="orange"
+        :length="parseInt(AllList.length/itemPerpage>parseInt(AllList.length/itemPerpage)?AllList.length/itemPerpage+1:AllList.length/itemPerpage)"
+        circle
+      ></v-pagination>
+    </div>
   </v-container>
 </template>
 
@@ -46,17 +64,28 @@ export default {
   created() {
     this.GetTag();
     this.Search = "";
+    this.page = 1;
   },
   computed: {
     ...mapState(["Stock", "listCate"]),
     list: function() {
-      return this.GetData().filter(
-        ele =>
-          ele
-            .data()
-            .name.toLowerCase()
-            .search(this.Search.toLowerCase()) != -1
-      ).sort((item1,item2)=> item1.data().name.localeCompare(item2.data().name));
+      return this.AllList.slice(
+        (this.page - 1) * this.itemPerpage,
+        this.page * this.itemPerpage
+      );
+    },
+    AllList: function() {
+      return this.GetData()
+        .filter(
+          ele =>
+            ele
+              .data()
+              .name.toLowerCase()
+              .search(this.Search.toLowerCase()) != -1
+        )
+        .sort((item1, item2) =>
+          item1.data().name.localeCompare(item2.data().name)
+        );
     },
     GetDocFromPath() {
       return this.listCate.find(
@@ -68,7 +97,9 @@ export default {
     return {
       subKey: null,
       subcate: [],
-      Search: ""
+      Search: "",
+      itemPerpage: 30,
+      page: 1
     };
   },
   watch: {
@@ -76,10 +107,18 @@ export default {
       this.subKey = null;
       this.Search = "";
       this.GetTag();
+      this.page = 1;
     },
     "GetDocFromPath.children": function() {
       this.Search = "";
       this.GetTag();
+      this.page = 1;
+    },
+    subKey: function() {
+      this.page = 1;
+    },
+    page: function() {
+      window.scrollTo(0, 0);
     }
   },
   methods: {

@@ -16,14 +16,14 @@
         <span>BIMTECHSF</span>
         <span class="font-weight-light">.COM</span>
       </v-toolbar-title>
-      <v-btn @click="goto('/POS')" flat>
+      <v-btn to="/POS" flat>
         <span v-if="this.$route.path!=='/POS'" class="mx-2">P.O.S</span>
         <span v-else class="mx-2 orange--text">P.O.S</span>
       </v-btn>
       <div class="text-xs-center">
         <v-menu open-on-hover offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn @click="goto('/RestaurantSupply')" flat v-on="on">
+            <v-btn to="/RestaurantSupply" flat v-on="on">
               <span
                 v-if="$route.path.indexOf('/RestaurantSupply')!==-1"
                 class="orange--text"
@@ -36,7 +36,7 @@
             <v-list-tile
               v-for="(item, index) in Categories"
               :key="index"
-              @click="goto('/RestaurantSupply/'+item.data().name)"
+              :to="'/RestaurantSupply/'+item.data().name"
             >
               <v-list-tile-title>
                 <span
@@ -127,9 +127,6 @@ export default {
     return { snack: false };
   },
   methods: {
-    goto(page) {
-      this.$router.push({ path: page });
-    },
     handleCate() {},
     ...mapMutations(["initialize", "closeSnackbar"])
   }

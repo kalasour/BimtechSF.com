@@ -47,9 +47,37 @@
         </div>
       </v-flex>
       <v-flex xs12 sm6 md9>
-        <ItemCard  :Item="null"/>
+        <v-layout row wrap>
+          <v-flex xs12 sm6 md3>
+            <v-text-field
+              color="orange"
+              hide-details
+              prepend-icon="search"
+              label="Search"
+              v-model="Search"
+            ></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm6 md1>
+            <v-select
+              color="orange"
+              :items="[30,60,300]"
+              v-model="itemPerpage"
+              label="Item per page"
+            ></v-select>
+          </v-flex>
+        </v-layout>
+        <ItemCard :Item="null" />
         <ItemCard v-for="item in list" :key="item.id" :Item="item.data()" :ID="item.id" />
       </v-flex>
+      <v-layout justify-center>
+        <v-pagination
+          v-model="page"
+          color="orange"
+          class="mb-3"
+          :length="parseInt(AllList.length/itemPerpage>parseInt(AllList.length/itemPerpage)?AllList.length/itemPerpage+1:AllList.length/itemPerpage)"
+          circle
+        ></v-pagination>
+      </v-layout>
     </v-layout>
   </v-container>
 </template>
@@ -63,18 +91,40 @@ export default {
       editCateDialog: false,
       editing: null,
       edit: false,
-      edtingField: ""
+      edtingField: "",
+      Search: "",
+      itemPerpage: 30,
+      page: 1
     };
   },
   computed: {
-    ...mapState(["listCate","Stock"]),
+    ...mapState(["listCate", "Stock"]),
     list: function() {
-      return this.GetData();
+      return this.AllList.slice(
+        (this.page - 1) * this.itemPerpage,
+        this.page * this.itemPerpage
+      );
+    },
+    AllList: function() {
+      return this.GetData()
+        .filter(
+          ele =>
+            ele
+              .data()
+              .name.toLowerCase()
+              .search(this.Search.toLowerCase()) != -1
+        )
+        .sort((item1, item2) =>
+          item1.data().name.localeCompare(item2.data().name)
+        );
     }
   },
   watch: {
     "listCate.children": function() {
       console.log("child change");
+    },
+    page: function() {
+      window.scrollTo(0, 0);
     }
   },
   components: {},
@@ -83,16 +133,12 @@ export default {
     GetData() {
       return this.Stock.filter(element => {
         var el = element.data();
-        return (
-          (this.tagKey == null || el.tag.indexOf(this.tagKey.id) != -1)
-        );
+        return this.tagKey == null || el.tag.indexOf(this.tagKey.id) != -1;
       });
     },
     setTagKey(key) {
+      this.page = 1;
       this.tagKey = key;
-    },
-    test(t) {
-      console.log(t);
     },
     appCreateCate() {
       if (this.editing == null) this.editing = {};
@@ -119,7 +165,7 @@ export default {
     },
     deleteCate(item) {
       this.$confirm("Do you really want to delete?").then(res => {
-        if(res)this.DeleteCate(item)
+        if (res) this.DeleteCate(item);
       });
     },
     editCate(item) {
