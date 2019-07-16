@@ -15,7 +15,7 @@
         >
           <template v-slot:placeholder>
             <v-layout fill-height align-center justify-center ma-0>
-              <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+              <v-progress-circular indeterminate color="orange"></v-progress-circular>
             </v-layout>
           </template>
           <v-expand-transition v-if="Item.imgs!=null">
@@ -24,13 +24,10 @@
               class="d-flex transition-fast-in-fast-out white darken-2 v-card--reveal display-3 white--text"
               style="height: 100%;"
             >
-              <v-img
-                :aspect-ratio="16/9"
-                :src="Item.imgs[1]"
-              >
+              <v-img :aspect-ratio="16/9" :src="Item.imgs[1]">
                 <template v-slot:placeholder>
                   <v-layout fill-height align-center justify-center ma-0>
-                    <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                    <v-progress-circular indeterminate color="orange"></v-progress-circular>
                   </v-layout>
                 </template>
               </v-img>
@@ -108,37 +105,25 @@ export default {
   data: () => ({}),
   components: {},
   computed: {
-    ...mapState(["userProfile"]),
-    
+    ...mapState(["userProfile"])
   },
   props: {
     Item: Object,
     ID: String
   },
-  watch: {
-   
-  
-  },
+  watch: {},
   methods: {
-    ...mapMutations([
-      "AddToCart",
-      
-      "DeleteItem",
-     
-      "editItem"
-    ]),
-    
+    ...mapMutations(["AddToCart", "DeleteItem", "editItem"]),
+
     deleteItem() {
       this.$confirm("Do you really want to delete?").then(res => {
         if (res) this.DeleteItem(this.ID);
       });
     },
-    
+
     addItem() {
       this.editItem({});
-    },
-
-   
+    }
   }
 };
 </script>

@@ -17,21 +17,56 @@
         </v-stepper-header>
         <v-stepper-items>
           <v-stepper-content v-for="n in steps" :key="`${n}-content`" :step="n">
-            <v-layout v-if="n==1" wrap>
+            <v-layout v-if="n==1" wrap justify-space-around>
               <v-flex xs12 sm6 md4>
-                <v-text-field v-model="selectedItem.code" label="Code" required></v-text-field>
+                <v-text-field color="orange" v-model="selectedItem.code" label="Code" required></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md4>
-                <v-text-field v-model="selectedItem.name" label="Name"></v-text-field>
+                <v-text-field color="orange" v-model="selectedItem.name" label="Name"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md2>
-                <v-text-field v-model="selectedItem.price" label="Price" type="number" required></v-text-field>
+                <v-text-field
+                  color="orange"
+                  v-model="selectedItem.price"
+                  label="Price"
+                  type="number"
+                  required
+                ></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md2>
-                <v-switch label="Disable" v-model="isOff"></v-switch>
+                <v-switch color="orange" label="Disable" v-model="isOff"></v-switch>
+              </v-flex>
+              <v-flex xs12 sm6 md2>
+                <v-switch color="orange" label="Tax Active" v-model="selectedItem.TaxActive"></v-switch>
+              </v-flex>
+              <v-flex xs12 sm6 md4>
+                <v-switch
+                  color="orange"
+                  label="Discount Active"
+                  v-model="selectedItem.DiscountActive"
+                ></v-switch>
+              </v-flex>
+              <v-flex xs12 sm6 md2>
+                <v-text-field
+                  color="orange"
+                  v-model="selectedItem.DiscountPer"
+                  label="Discount (%)"
+                  type="number"
+                  required
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md2>
+                <v-text-field
+                  color="orange"
+                  v-model="selectedItem.DiscountAmount"
+                  label="Discount (Amount)"
+                  type="number"
+                  required
+                ></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <v-textarea
+                  color="orange"
                   v-model="selectedItem.description"
                   label="Description"
                   required
@@ -42,6 +77,7 @@
               </v-flex>
               <v-flex v-if="listCate!=[]" xs12 sm6 md6>
                 <v-autocomplete
+                  color="orange"
                   :items="listCate"
                   item-text="name"
                   item-value="id"
@@ -52,6 +88,7 @@
               </v-flex>
               <v-flex v-if="listCate!=[]" xs12 sm6 md6>
                 <v-autocomplete
+                  color="orange"
                   v-model="selectedItem.subCate"
                   :items="getSubCate"
                   item-text="name"
@@ -238,6 +275,8 @@ export default {
           {},
           this.selectedItem.Options
         );
+        this.selectedItem.TaxActive = !!this.selectedItem.TaxActive;
+        this.selectedItem.DiscountActive = !!this.selectedItem.DiscountActive;
       }
     }
   },
