@@ -7,7 +7,7 @@ import EditProfile from './views/EditProfile.vue'
 import Cart from './views/Cart.vue'
 import { auth } from './firebase'
 import Store from './store'
-import NProgress from 'nprogress'
+import ItemView from './views/ItemView.vue'
 Vue.use(Router)
 const router = new Router({
   mode: 'history',
@@ -33,6 +33,11 @@ const router = new Router({
       name: 'Manager',
       component: Manager,
       meta: { requiresAdmin: true, requiresAuth: true }
+    },
+    {
+      path: '/Item/:id',
+      name: 'ItemView',
+      component: ItemView,
     },
     {
       path: '/Manager/',

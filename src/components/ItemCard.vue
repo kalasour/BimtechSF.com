@@ -8,6 +8,7 @@
         class="mx-3 left my-3"
         width="300"
         height="350"
+        :to="'/Item/'+ID"
       >
         <v-img
           :aspect-ratio="16/9"
@@ -40,7 +41,7 @@
             class="white--text mt-4"
             left
             top
-            @click="deleteItem()"
+            @click.stop.prevent="deleteItem()"
           >
             <v-icon>delete</v-icon>
           </v-btn>
@@ -51,7 +52,7 @@
             class="white--text mt-4"
             right
             top
-            @click="editItem({...Item,id:ID})"
+            @click.stop.prevent="editItem({...Item,id:ID})"
           >
             <v-icon>edit</v-icon>
           </v-btn>
@@ -65,7 +66,7 @@
             fab
             right
             top
-            @click="AddToCart(ID)"
+            @click.stop.prevent="AddToCart(ID)"
           >
             <v-icon>add_shopping_cart</v-icon>
           </v-btn>
