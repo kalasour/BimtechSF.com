@@ -156,7 +156,11 @@
             </v-layout>
             <v-layout class="ml-4 my-3" row wrap align-content-center align-center>
               <v-flex xs2>
-                <v-btn large color="orange white--text">
+                <v-btn
+                  @click="AddToCart({id:ID,OpSelected:OpArray,amount:amount})"
+                  large
+                  color="orange white--text"
+                >
                   <v-icon class="mr-3">add_shopping_cart</v-icon>Add to cart
                 </v-btn>
               </v-flex>
@@ -228,7 +232,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["editItem"]),
+    ...mapMutations(["editItem", "AddToCart"]),
     isNumber(event) {
       var ch = String.fromCharCode(event.which);
       if (!/[1-9]/.test(ch)) {

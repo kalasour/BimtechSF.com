@@ -165,16 +165,14 @@ export default new Vuex.Store({
     },
     AddToCart(state, payload) {
       if (state.isLogin) {
-
-
-
-        if (state.Cart.findIndex((ele) => ele.id == payload) != -1) {
-          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).update({
-            amount: firebase.firestore.FieldValue.increment(1)
+        if (state.Cart.findIndex((ele) => ele.id == (payload.id + 'Select' + payload.OpSelected.reduce((sum, num) => sum.id.toString() + num.id.toString()))) != -1) {
+          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload.id + 'Select' + payload.OpSelected.reduce((sum, num) => sum.id.toString() + num.id.toString())).update({
+            OpSelected: payload.OpSelected,
+            amount: firebase.firestore.FieldValue.increment(payload.amount)
           })
         } else {
-          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload).set({
-            amount: 1,
+          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload.id + 'Select' + payload.OpSelected.reduce((sum, num) => sum.id.toString() + num.id.toString())).set({
+            ...payload,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           })
         }
@@ -353,8 +351,10 @@ export default new Vuex.Store({
                 var be = temp.find((ele) => ele.id == doc.id)
                 var obj = await Object.assign(be == null ? {} : be, doc.data())
                 obj.id = await doc.id
-                await firestore.collection('Stock').doc(doc.id).onSnapshot(async snap => {
-                  obj = Object.assign(obj, snap.data())
+                await firestore.collection('Stock').doc(doc.data().id).onSnapshot(async snap => {
+                  var t = snap.data()
+                  if (t.id) delete t.id
+                  obj = Object.assign(obj, t)
                   var arr = await state.Cart
                   await Vue.set(state, 'Cart', []);
                   await Vue.set(state, 'Cart', arr)
