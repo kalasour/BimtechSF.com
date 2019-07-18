@@ -58,7 +58,7 @@
           </v-btn>
         </v-img>
         <v-card-text class="pt-4" style="position: relative;">
-          <v-btn
+          <!-- <v-btn
             absolute
             color="orange"
             class="white--text"
@@ -69,7 +69,7 @@
             @click.stop.prevent="AddToCart(ID)"
           >
             <v-icon>add_shopping_cart</v-icon>
-          </v-btn>
+          </v-btn> -->
           <!-- <v-responsive :aspect-ratio="16/4"> -->
           <h4 class="headline font-weight-light mb-2 text-truncate">{{Item.name}}</h4>
           <!-- </v-responsive> -->

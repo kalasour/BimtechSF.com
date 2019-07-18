@@ -1,5 +1,28 @@
 <template>
   <v-container fluid grid-list-md>
+    <v-dialog v-model="settingDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Setting</span>
+        </v-card-title>
+        <v-card-text>
+          <v-layout wrap>
+            <v-flex xs3> 
+            <v-text-field color="orange" label="Tax rate(%)" type="number" v-model="taxRate"></v-text-field>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="orange white--text"
+            @click="ApplySettingStock({TaxRate:taxRate});settingDialog=false"
+          >Apply</v-btn>
+          <v-btn color="secondary" flat @click="settingDialog=false">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="editCateDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
@@ -7,15 +30,15 @@
         </v-card-title>
         <v-card-text>
           <v-layout wrap>
-            <v-text-field label="category name" v-model="edtingField"></v-text-field>
-            <v-btn color="blue darken-1" v-if="edit" flat @click="appEditCate">Apply</v-btn>
-            <v-btn color="blue darken-1" v-else flat @click="appCreateCate">Apply</v-btn>
+            <v-text-field color="orange" label="category name" v-model="edtingField"></v-text-field>
+            <v-btn color="orange" v-if="edit" flat @click="appEditCate">Apply</v-btn>
+            <v-btn color="orange" v-else flat @click="appCreateCate">Apply</v-btn>
           </v-layout>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click="closeCate">Close</v-btn>
+          <v-btn color="secondary" flat @click="closeCate">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -47,7 +70,7 @@
         </div>
       </v-flex>
       <v-flex xs12 sm6 md9>
-        <v-layout row wrap>
+        <v-layout row wrap align-end align-content-end>
           <v-flex xs12 sm6 md3>
             <v-text-field
               color="orange"
@@ -59,11 +82,15 @@
           </v-flex>
           <v-flex xs12 sm6 md1>
             <v-select
+              hide-details
               color="orange"
               :items="[30,60,300]"
               v-model="itemPerpage"
               label="Item per page"
             ></v-select>
+          </v-flex>
+          <v-flex xs12 sm6 md1>
+            <v-icon :style="{cursor:'pointer'}" @click="settingDialog=true" large>settings</v-icon>
           </v-flex>
         </v-layout>
         <ItemCard :Item="null" />
@@ -87,6 +114,7 @@ import { mapState, mapMutations } from "vuex";
 export default {
   data() {
     return {
+      settingDialog: false,
       tagKey: null,
       editCateDialog: false,
       editing: null,
@@ -94,11 +122,12 @@ export default {
       edtingField: "",
       Search: "",
       itemPerpage: 30,
-      page: 1
+      page: 1,
+      taxRate: 0
     };
   },
   computed: {
-    ...mapState(["listCate", "Stock"]),
+    ...mapState(["listCate", "Stock", "SettingStock"]),
     list: function() {
       return this.AllList.slice(
         (this.page - 1) * this.itemPerpage,
@@ -125,11 +154,21 @@ export default {
     },
     page: function() {
       window.scrollTo(0, 0);
+    },
+    settingDialog: function() {
+      if (this.settingDialog) {
+        this.taxRate = this.SettingStock.TaxRate;
+      }
     }
   },
   components: {},
   methods: {
-    ...mapMutations(["EditCate", "CreateCate", "DeleteCate"]),
+    ...mapMutations([
+      "EditCate",
+      "CreateCate",
+      "DeleteCate",
+      "ApplySettingStock"
+    ]),
     GetData() {
       return this.Stock.filter(element => {
         var el = element.data();
