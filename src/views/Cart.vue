@@ -14,6 +14,7 @@
               v-model="selected"
               :headers="headers"
               :items="getList"
+              item-key="cartId"
             >
               <template v-slot:headers="props">
                 <tr>
@@ -81,7 +82,7 @@
                         small
                         :disabled="props.item.amount<=1"
                         :style="{cursor:'pointer'}"
-                        @click="decreaseAmount(props.item.id)"
+                        @click="decreaseAmount(props.item.cartId)"
                       >remove</v-icon>
                       <v-text-field
                         :style="{width:'10px'}"
@@ -89,12 +90,12 @@
                         class="centered-input"
                         v-model="props.item.amount"
                         @keypress="isNumber"
-                        @blur="changeAmount($event,props.item.id,props.item)"
+                        @blur="changeAmount($event,props.item.cartId,props.item)"
                       ></v-text-field>
                       <v-icon
                         small
                         :style="{cursor:'pointer'}"
-                        @click="increaseAmount(props.item.id)"
+                        @click="increaseAmount(props.item.cartId)"
                       >add</v-icon>
                     </v-layout>
                   </td>
@@ -102,7 +103,7 @@
                     class="text-xs-center subheading orange--text"
                   >${{ props.item.amount * (props.item.price==null?0:props.item.price)}}</td>
                   <td class="text-xs-center red--text">
-                    <v-icon :style="{cursor:'pointer'}" @click="onDelete(props.item.id)">delete</v-icon>
+                    <v-icon :style="{cursor:'pointer'}" @click="onDelete(props.item.cartId)">delete</v-icon>
                   </td>
                 </tr>
               </template>
@@ -192,7 +193,7 @@ export default {
     },
     isNumber(event) {
       var ch = String.fromCharCode(event.which);
-      if (!/[1-9]/.test(ch)) {
+      if (!/[0-9]/.test(ch)) {
         event.preventDefault();
       }
     },

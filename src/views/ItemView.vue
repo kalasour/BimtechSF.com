@@ -245,11 +245,18 @@ export default {
       return this.Item.imgs.slice(this.imgCount, this.imgCount + 4);
     },
     ...mapState(["Stock", "userProfile"]),
+    Doc() {
+      return this.Stock.find(ele => ele.id == this.$route.params.id);
+    },
     Item() {
-      return this.Stock.find(ele => ele.id == this.$route.params.id).data();
+      return this.userProfile.isAdmin || !this.Doc.data().isDisabled
+        ? this.Doc.data()
+        : null;
     },
     ID() {
-      return this.Stock.find(ele => ele.id == this.$route.params.id).id;
+      return this.userProfile.isAdmin || !this.Doc.data().isDisabled
+        ? this.Doc.id
+        : null;
     },
     Price() {
       return this.Item.DiscountActive

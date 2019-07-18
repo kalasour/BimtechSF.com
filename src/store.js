@@ -165,7 +165,7 @@ export default new Vuex.Store({
     },
     AddToCart(state, payload) {
       if (state.isLogin) {
-        if (state.Cart.findIndex((ele) => ele.id == (payload.id + 'Select' + payload.OpSelected.reduce((sum, num) => sum.id.toString() + num.id.toString()))) != -1) {
+        if (state.Cart.findIndex((ele) => ele.cartId == (payload.id + 'Select' + payload.OpSelected.reduce((sum, num) => sum.id.toString() + num.id.toString()))) != -1) {
           firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload.id + 'Select' + payload.OpSelected.reduce((sum, num) => sum.id.toString() + num.id.toString())).update({
             OpSelected: payload.OpSelected,
             amount: firebase.firestore.FieldValue.increment(payload.amount)
@@ -350,11 +350,9 @@ export default new Vuex.Store({
               snapshot.forEach(async doc => {
                 var be = temp.find((ele) => ele.id == doc.id)
                 var obj = await Object.assign(be == null ? {} : be, doc.data())
-                obj.id = await doc.id
+                obj.cartId = await doc.id
                 await firestore.collection('Stock').doc(doc.data().id).onSnapshot(async snap => {
-                  var t = snap.data()
-                  if (t.id) delete t.id
-                  obj = Object.assign(obj, t)
+                  if (!snap.data().isDisabled) obj = Object.assign(obj, snap.data())
                   var arr = await state.Cart
                   await Vue.set(state, 'Cart', []);
                   await Vue.set(state, 'Cart', arr)
