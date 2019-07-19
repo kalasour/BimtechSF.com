@@ -181,8 +181,9 @@
                 <p class="mb-0">{{address.address}} {{address.city}} {{address.company}}</p>
                 <p>
                   {{address.state==null?'':address.state.name}}
-                  <span v-if="address.type!=null">({{address.type}})</span>
-
+                  <span
+                    v-if="address.type!=null"
+                  >({{address.type}})</span>
                   {{address.zip}}
                 </p>
               </v-flex>
@@ -210,6 +211,7 @@
         </v-card>
       </v-flex>
     </v-layout>
+    {{newSelected}}
   </div>
 </template>
 <style>
@@ -233,18 +235,23 @@ export default {
         return [];
       }
     },
+    newSelected() {
+      return this.selected.map(item => {
+        return this.Cart.find(ele => ele.cartId == item.cartId);
+      });
+    },
     Subtotal() {
-      return this.selected.length == 0
+      return this.newSelected.length == 0
         ? 0
-        : this.selected
+        : this.newSelected
             .map(item => parseFloat(item.amount) * parseFloat(this.Price(item)))
             .reduce((sum, num) => sum + num)
             .toFixed(2);
     },
     Taxes() {
-      return this.selected.length == 0
+      return this.newSelected.length == 0
         ? 0
-        : this.selected
+        : this.newSelected
             .map(item =>
               !item.TaxActive
                 ? 0

@@ -345,21 +345,20 @@ export default new Vuex.Store({
           state.isLogin = true;
           firestore.collection('Users').doc(state.user.uid).onSnapshot(async docSnapshot => {
             state.userProfile = await docSnapshot.data()
-            docSnapshot.ref.collection('Cart').orderBy("createdAt", "desc").onSnapshot((snapshot) => {
-              var temp = state.Cart.slice(0)
-              state.Cart = []
-              snapshot.forEach(async doc => {
-                var be = temp.find((ele) => ele.id == doc.id)
-                var obj = await Object.assign(be == null ? {} : be, doc.data())
+            docSnapshot.ref.collection('Cart').orderBy("createdAt", "desc").onSnapshot(async (snapshot) => {
+              state.Cart = Object.assign(state.Cart, snapshot.docs.map(item => item.data()))
+              await snapshot.docs.forEach(async (doc, index) => {
+                var obj = await Object.assign({}, doc.data())
                 obj.cartId = await doc.id
-                await firestore.collection('Stock').doc(doc.data().id).onSnapshot(async snap => {
-                  if (!snap.data().isDisabled) obj = Object.assign(obj, snap.data())
-                  var arr = Object.assign([], state.Cart)
-                  await Vue.set(state, 'Cart', []);
-                  await Vue.set(state, 'Cart', arr)
-                })
-                state.Cart.push(obj)
+                var snap = await state.Stock.find(ele => ele.id == doc.data().id)
+                if (!snap.data().isDisabled) obj = await Object.assign(obj, snap.data())
+
+                // state.Cart[index] = obj
+                Vue.set(state.Cart, index, obj)
               })
+              // var arr = await Object.assign([], state.Cart)
+              // await Vue.set(state, 'Cart', []);
+              // await Vue.set(state, 'Cart', arr)
             })
             // state.isLoading = false
           }, err => {
