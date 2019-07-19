@@ -4,7 +4,7 @@
       <v-flex xs8>
         <v-card>
           <v-card-title class="pb-0">
-            <p class="title mb-1">Your cart</p>
+            <p class="title mb-3">Your cart</p>
           </v-card-title>
           <v-divider inset class="mx-auto"></v-divider>
           <v-card-text>
@@ -48,34 +48,66 @@
                     <v-checkbox :input-value="props.selected" color="orange" hide-details></v-checkbox>
                   </td>
                   <td>
-                    <v-layout class="my-2" row wrap>
-                      <v-flex xs3>
-                        <v-img
-                          max-width="75"
-                          max-height="75"
-                          :src="props.item.imgs==null?'':props.item.imgs[0]"
-                          :lazy-src="props.item.imgs==null?'':props.item.imgs[0]"
-                          aspect-ratio="1"
-                        >
-                          <template v-slot:placeholder>
-                            <v-layout fill-height align-center justify-center ma-0>
-                              <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                    <v-card color="rgba(0, 0, 0, 0)" flat :to="'/Item/'+props.item.id">
+                      <v-layout class="my-2" row wrap>
+                        <v-flex xs3>
+                          <v-img
+                            max-width="75"
+                            max-height="75"
+                            :src="props.item.imgs==null?'':props.item.imgs[0]"
+                            :lazy-src="props.item.imgs==null?'':props.item.imgs[0]"
+                            aspect-ratio="1"
+                          >
+                            <template v-slot:placeholder>
+                              <v-layout fill-height align-center justify-center ma-0>
+                                <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                              </v-layout>
+                            </template>
+                          </v-img>
+                        </v-flex>
+                        <v-flex xs9>
+                          <div v-if="props.item.name!=null" class="mt-2 ml-2 text-truncate">
+                            <p class="mb-1 subheading">{{ props.item.name }}</p>
+                            <div v-if="props.item.OpSelected.length!=0">
+                              <span
+                                class="grey--text text-capitalize"
+                                v-for="(item,index) in props.item.OpSelected"
+                                :key="index"
+                              >
+                                {{(Object.values(props.item.Options))[index][item.id].name}}
+                                <span
+                                  v-if="props.item.OpSelected.length-1!=index"
+                                >,</span>
+                              </span>
+                            </div>
+                            <v-layout row wrap class="my-1">
+                              <div
+                                v-if="props.item.DiscountActive&&props.item.DiscountPer!=''&&props.item.DiscountPer!=null&&props.item.DiscountPer>0"
+                                class="mr-1 orange white--text"
+                              >
+                                <span class="mx-2">- {{props.item.DiscountPer}} %</span>
+                              </div>
+                              <div
+                                v-if="props.item.DiscountActive&&props.item.DiscountAmount!=null&&props.item.DiscountAmount!=''&&props.item.DiscountAmount>0"
+                                class="mx-1 orange white--text"
+                              >
+                                <span class="mx-2">- {{props.item.DiscountAmount}} $</span>
+                              </div>
                             </v-layout>
-                          </template>
-                        </v-img>
-                      </v-flex>
-                      <v-flex xs9>
-                        <p
-                          v-if="props.item.name!=null"
-                          class="mt-2 ml-2 text-truncate"
-                        >{{ props.item.name }}</p>
-                        <p v-else class="mt-2 ml-2 text-truncate orange--text">Loading...</p>
-                      </v-flex>
-                    </v-layout>
+                            <span v-if="props.item.TaxActive" class="caption red--text">*With tax!</span>
+                          </div>
+                          <p v-else class="mt-2 ml-2 text-truncate orange--text">Loading...</p>
+                        </v-flex>
+                      </v-layout>
+                    </v-card>
                   </td>
-                  <td
-                    class="text-xs-center subheading"
-                  >${{ props.item.price==null?0:props.item.price }}</td>
+                  <td class="text-xs-center subheading">
+                    <s
+                      v-if="nonDiscountPrice(props.item)!=Price(props.item)"
+                      class="grey--text caption"
+                    >${{ props.item.price==null?0:nonDiscountPrice(props.item) }}</s>
+                    <p>${{ props.item.price==null?0:Price(props.item) }}</p>
+                  </td>
                   <td class="text-xs-center subheading">
                     <v-layout row wrap>
                       <v-icon
@@ -101,7 +133,7 @@
                   </td>
                   <td
                     class="text-xs-center subheading orange--text"
-                  >${{ props.item.amount * (props.item.price==null?0:props.item.price)}}</td>
+                  >${{ (props.item.amount * (Price(props.item))).toFixed(2)}}</td>
                   <td class="text-xs-center red--text">
                     <v-icon :style="{cursor:'pointer'}" @click="onDelete(props.item.cartId)">delete</v-icon>
                   </td>
@@ -112,7 +144,7 @@
         </v-card>
       </v-flex>
       <v-flex xs3>
-        <v-card>
+        <v-card :style="{position: 'fixed',width:'23%'}">
           <v-card-text class="pb-0">
             <p class="grey--text mb-1">Address</p>
             <v-layout row wrap>
@@ -120,7 +152,38 @@
                 <v-icon>location_on</v-icon>
               </v-flex>
               <v-flex xs10>
-                <p>เชียงใหม่/ Chiang Mai,เมืองเชียงใหม่/ Mueang Chiang Mai,50200</p>
+                <v-select
+                  v-model="address"
+                  color="orange"
+                  hide-details
+                  class="pt-0 mt-0"
+                  :items="userProfile.Address"
+                >
+                  <template v-slot:selection="{ item, index }">
+                    <span class="caption">{{item.address}},{{item.city}}</span>
+                  </template>
+                  <template v-slot:item="{ item, index }">
+                    <span class="caption">{{item.address}},{{item.city}}</span>
+                  </template>
+                </v-select>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+          <v-card-text class="pb-0">
+            <p class="grey--text mb-1">Address</p>
+            <v-layout row wrap>
+              <v-flex xs2 class="text-xs-center">
+                <v-icon>location_on</v-icon>
+              </v-flex>
+              <v-flex xs10>
+                <p class="mb-0">{{address.firstname}} {{address.lastname}}</p>
+                <p class="mb-0">{{address.address}} {{address.city}} {{address.company}}</p>
+                <p>
+                  {{address.state==null?'':address.state.name}}
+                  <span v-if="address.type!=null">({{address.type}})</span>
+
+                  {{address.zip}}
+                </p>
               </v-flex>
             </v-layout>
           </v-card-text>
@@ -131,26 +194,22 @@
           <v-card-text class="pt-0">
             <v-layout row wrap justify-space-between>
               <p class="mb-1">Subtotal</p>
-              <p class="mb-1">12</p>
+              <p class="mb-1">{{Subtotal}}</p>
             </v-layout>
             <v-layout row wrap justify-space-between>
               <p class="mb-1">Taxes</p>
-              <p class="mb-1">12</p>
-            </v-layout>
-            <v-layout row wrap justify-space-between>
-              <p class="mb-1">Discounted</p>
-              <p class="mb-1">12</p>
+              <p class="mb-1">{{Taxes}}</p>
             </v-layout>
             <v-layout row wrap justify-space-between>
               <p class="mb-1">Total</p>
-              <p class="mb-1">12</p>
+              <p class="mb-1">{{Total}}</p>
             </v-layout>
             <v-btn block color="orange white--text">Place order</v-btn>
           </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
-    {{selected}}
+    {{address}}
   </div>
 </template>
 <style>
@@ -166,13 +225,38 @@ import vue from "vue";
 export default {
   components: {},
   computed: {
-    ...mapState(["userProfile", "Cart"]),
+    ...mapState(["userProfile", "Cart", "SettingStock"]),
     getList() {
       try {
         return this.Cart;
       } catch {
         return [];
       }
+    },
+    Subtotal() {
+      return this.selected.length == 0
+        ? 0
+        : this.selected
+            .map(item => parseFloat(item.amount) * parseFloat(this.Price(item)))
+            .reduce((sum, num) => sum + num)
+            .toFixed(2);
+    },
+    Taxes() {
+      return this.selected.length == 0
+        ? 0
+        : this.selected
+            .map(item =>
+              !item.TaxActive
+                ? 0
+                : (parseFloat(this.SettingStock.TaxRate) / 100) *
+                  parseFloat(item.amount) *
+                  parseFloat(this.Price(item))
+            )
+            .reduce((sum, num) => sum + num)
+            .toFixed(2);
+    },
+    Total() {
+      return (parseFloat(this.Subtotal) + parseFloat(this.Taxes)).toFixed(2);
     }
   },
   methods: {
@@ -182,6 +266,30 @@ export default {
       "decreaseAmount",
       "deleteCart"
     ]),
+    Price(Item) {
+      return Item.DiscountActive
+        ? this.nonDiscountPrice(Item) -
+            (Item.DiscountAmount == "" || Item.DiscountAmount == null
+              ? 0
+              : Item.DiscountAmount) -
+            (Item.DiscountPer == "" || Item.DiscountPer == null
+              ? 0
+              : (parseFloat(Item.DiscountPer) / 100) *
+                this.nonDiscountPrice(Item))
+        : this.nonDiscountPrice(Item);
+    },
+    nonDiscountPrice(Item) {
+      return (
+        parseFloat(Item.price) +
+        parseFloat(
+          Item.OpSelected.length == 0
+            ? 0
+            : Item.OpSelected.map(item => item.price).reduce(
+                (sum, num) => parseFloat(sum) + parseFloat(num)
+              )
+        )
+      ).toFixed(2);
+    },
     toggleAll() {
       if (this.selected.length) this.selected = [];
       else this.selected = this.getList;
@@ -203,8 +311,15 @@ export default {
       this.updateCartAmount(payload);
     }
   },
+  mounted() {
+    this.address = Object.assign(
+      {},
+      this.userProfile.Address[this.userProfile.defaultAddress]
+    );
+  },
   data() {
     return {
+      address: {},
       selected: [],
       headers: [
         {
@@ -216,7 +331,7 @@ export default {
         },
         { text: "Unit price", value: "price" },
         { text: "Amount", value: "fat" },
-        { text: "Subtotal", sortable: false },
+        { text: "Line total", sortable: false },
         { text: "Actions", sortable: false }
       ]
     };

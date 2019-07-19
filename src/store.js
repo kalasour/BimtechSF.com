@@ -165,13 +165,14 @@ export default new Vuex.Store({
     },
     AddToCart(state, payload) {
       if (state.isLogin) {
-        if (state.Cart.findIndex((ele) => ele.cartId == (payload.id + 'Select' + payload.OpSelected.reduce((sum, num) => sum.id.toString() + num.id.toString()))) != -1) {
-          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload.id + 'Select' + payload.OpSelected.reduce((sum, num) => sum.id.toString() + num.id.toString())).update({
+        var ID = payload.OpSelected.length == 0 ? payload.id : (payload.id + 'Select' + payload.OpSelected.map(item => item.id.toString()).reduce((sum, num) => sum + num))
+        if (state.Cart.findIndex((ele) => ele.cartId == (ID)) != -1) {
+          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(ID).update({
             OpSelected: payload.OpSelected,
             amount: firebase.firestore.FieldValue.increment(payload.amount)
           })
         } else {
-          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(payload.id + 'Select' + payload.OpSelected.reduce((sum, num) => sum.id.toString() + num.id.toString())).set({
+          firestore.collection('Users').doc(state.user.uid).collection('Cart').doc(ID).set({
             ...payload,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           })

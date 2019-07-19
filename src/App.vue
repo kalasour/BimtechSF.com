@@ -55,9 +55,12 @@
     </v-toolbar>
 
     <v-content>
-      <router-view></router-view>
+      <router-view v-if="Stock.length!=0"></router-view>
+      <v-layout align-center justify-center v-else>
+        <v-progress-circular :size="50" color="orange" indeterminate></v-progress-circular>
+      </v-layout>
     </v-content>
-    <v-footer v-if="$route.path!='/Manager'" light height="auto">
+    <v-footer v-if="$route.path!='/Manager'" class="mt-5" light height="auto">
       <v-card class="flex" flat tile>
         <v-card-title class="white">
           <v-layout row wrap justify-space-around>
