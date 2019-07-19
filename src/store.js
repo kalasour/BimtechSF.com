@@ -354,7 +354,7 @@ export default new Vuex.Store({
                 obj.cartId = await doc.id
                 await firestore.collection('Stock').doc(doc.data().id).onSnapshot(async snap => {
                   if (!snap.data().isDisabled) obj = Object.assign(obj, snap.data())
-                  var arr = await state.Cart
+                  var arr = Object.assign([], state.Cart)
                   await Vue.set(state, 'Cart', []);
                   await Vue.set(state, 'Cart', arr)
                 })

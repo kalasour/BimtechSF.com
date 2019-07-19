@@ -14,6 +14,7 @@
               v-model="selected"
               :headers="headers"
               :items="getList"
+              disable-initial-sort
               item-key="cartId"
             >
               <template v-slot:headers="props">
@@ -209,7 +210,6 @@
         </v-card>
       </v-flex>
     </v-layout>
-    {{address}}
   </div>
 </template>
 <style>
