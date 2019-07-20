@@ -8,15 +8,23 @@
         </div>
         <v-divider></v-divider>
         <v-layout class="px-2 py-0">
-          <v-btn flat class="pa-0 ma-0" @click="SetSubKey(null)">
+          <v-btn
+            flat
+            class="pa-0 ma-0"
+            :to="{name:'RestaurantSupply',params:{cate:$route.params.cate}}"
+          >
             <v-icon v-if="null==subKey" class="orange--text" small>trip_origin</v-icon>
             <v-icon v-else small>trip_origin</v-icon>
-            <span v-if="null==subKey" class="orange--text body-1 px-2">{{$route.params.pathMatch}}</span>
-            <span v-else class="body-1 px-2">{{$route.params.pathMatch}}</span>
+            <span v-if="null==subKey" class="orange--text body-1 px-2">{{$route.params.cate}}</span>
+            <span v-else class="body-1 px-2">{{$route.params.cate}}</span>
           </v-btn>
         </v-layout>
         <v-layout v-for="(item,index) in subcate" :key="index" class="px-3 py-0">
-          <v-btn flat class="pa-0 ma-0" @click="SetSubKey(item.id)">
+          <v-btn
+            flat
+            class="pa-0 ma-0"
+            :to="{name:'RestaurantSupplySubcate',params:{cate:$route.params.cate,subcate:item.name}}"
+          >
             <v-icon v-if="item.id==subKey" small class="orange--text">trip_origin</v-icon>
             <v-icon v-else small>trip_origin</v-icon>
             <span v-if="item.id==subKey" class="body-1 px-2 orange--text">{{item.name}}</span>
@@ -64,10 +72,19 @@ export default {
   created() {
     this.GetTag();
     this.Search = "";
-    this.page = 1;
+    if (this.$route.params.page != null)
+      this.page = parseInt(this.$route.params.page);
+    else this.page = 1;
   },
   computed: {
     ...mapState(["Stock", "listCate"]),
+    subKey() {
+      if (this.$route.params.subcate == null) return null;
+      if (this.subcate.length != 0)
+        return this.subcate.find(ele => ele.name == this.$route.params.subcate)
+          .id;
+    },
+
     list: function() {
       return this.AllList.slice(
         (this.page - 1) * this.itemPerpage,
@@ -88,14 +105,11 @@ export default {
         );
     },
     GetDocFromPath() {
-      return this.listCate.find(
-        ele => ele.name == this.$route.params.pathMatch
-      );
+      return this.listCate.find(ele => ele.name == this.$route.params.cate);
     }
   },
   data() {
     return {
-      subKey: null,
       subcate: [],
       Search: "",
       itemPerpage: 30,
@@ -123,10 +137,6 @@ export default {
   },
   methods: {
     ...mapMutations(["setLoading"]),
-    SetSubKey(key) {
-      this.subKey = key;
-    },
-
     GetData() {
       return this.Stock.filter(element => {
         var el = element.data();

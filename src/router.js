@@ -18,15 +18,25 @@ const router = new Router({
       name: 'home',
       component: Home
     },
+    // {
+    //   path: '/RestaurantSupply/*',
+    //   name: 'RestaurantSupply',
+    //   component: Cate
+    // },
     {
-      path: '/RestaurantSupply/*',
-      name: 'RestaurantSupply',
-      component: Cate
+      path: '/RestaurantSupply/:cate/:subcate',
+      name: 'RestaurantSupplySubcate',
+      component: Cate,
     },
     {
-      path: '/RestaurantSupply',
-      name: 'RestaurantSupplyAll',
-      component: Cate
+      path: '/RestaurantSupply/:cate/:page',
+      name: 'RestaurantSupplySubcatePage',
+      component: Cate,
+    },
+    {
+      path: '/RestaurantSupply/:cate',
+      name: 'RestaurantSupply',
+      component: Cate,
     },
     {
       path: '/Manager/:state',

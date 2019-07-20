@@ -36,11 +36,12 @@
             <v-list-tile
               v-for="(item, index) in Categories"
               :key="index"
-              :to="'/RestaurantSupply/'+item.data().name"
+              :cate="item.data().name"
+              :to="{name:'RestaurantSupply',params:{cate:item.data().name}}"
             >
               <v-list-tile-title>
                 <span
-                  v-if="$route.path.indexOf('/RestaurantSupply/'+item.data().name)!==-1"
+                  v-if="$route.params.cate==item.data().name"
                   class="orange--text"
                 >{{ item.data().name }}</span>
                 <span v-else>{{ item.data().name }}</span>

@@ -1,19 +1,55 @@
 <template>
   <div>
+    <v-dialog width="1200" v-model="addressManageDialog">
+      <v-card>
+      <AddressSetting />
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn @click="addressManageDialog=false" flat color="secondary">Close</v-btn>
+      </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog width="900" v-model="addressDialog">
       <v-card>
-        <v-card-title class="pb-0">
+        <v-card-title class="pb-3">
           <span class="title">Your address</span>
           <v-spacer></v-spacer>
+
           <v-icon @click="addressDialog=false" class="red--text" :style="{cursor:'pointer'}">clear</v-icon>
         </v-card-title>
-        <v-card-text class="pt-0">
-          <div
-            :class="(index==addressIndex?'orange':'black')+'--text my-3'"
-            v-for="(item,index) in userProfile.Address"
-            :key="index"
-          >{{item}}</div>
+        <v-card-text class="py-0">
+          <v-layout justify-space-around align-center align-content-center row wrap>
+            <v-flex
+              xs11
+              :class="(index==addressIndex?'orange':'black')+'--text ma-2 py-2 px-3'"
+              v-for="(item,index) in userProfile.Address"
+              @click="addressIndex=index;"
+              :style="{cursor:'pointer',border:'1px solid '+(index==addressIndex?'orange':'grey')}"
+              :key="index"
+            >
+              <div class="my-auto py-auto">
+                <span>
+                  <v-icon small class="mr-2" color="orange" v-if="index==addressIndex">check_box</v-icon>
+                  <v-icon small class="mr-2" v-else>check_box_outline_blank</v-icon>
+                </span>
+                <span>{{item.firstname}} {{item.lastname}} {{item.phone}} {{item.address}} {{item.city}} {{item.company}}</span>
+                <span>
+                  {{item.state==null?'':item.state.name}}
+                  <span
+                    v-if="item.type!=null"
+                  >({{item.type}})</span>
+                  {{item.zip}}
+                </span>
+              </div>
+            </v-flex>
+          </v-layout>
         </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="addressManageDialog=true" flat>
+            <v-icon class="mr-2" color="orange orange--text">add_location</v-icon>Manage Address
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog width="300" v-model="updateDialog">
@@ -197,30 +233,6 @@
       </v-flex>
       <v-flex xs3>
         <v-card :style="{position: 'fixed',width:'23%'}">
-          <v-card-text class="pb-0">
-            <p class="grey--text mb-1">Address</p>
-            <v-layout row wrap>
-              <v-flex xs2 class="text-xs-center">
-                <v-icon>location_on</v-icon>
-              </v-flex>
-              <v-flex xs10>
-                <v-select
-                  v-model="address"
-                  color="orange"
-                  hide-details
-                  class="pt-0 mt-0"
-                  :items="userProfile.Address"
-                >
-                  <template v-slot:selection="{ item, index }">
-                    <span class="caption">{{item.address}},{{item.city}}</span>
-                  </template>
-                  <template v-slot:item="{ item, index }">
-                    <span class="caption">{{item.address}},{{item.city}}</span>
-                  </template>
-                </v-select>
-              </v-flex>
-            </v-layout>
-          </v-card-text>
           <v-card-text @click="addressDialog=true" :style="{cursor:'pointer'}" class="pb-0">
             <p class="grey--text mb-1">Address</p>
             <v-layout row wrap>
@@ -275,8 +287,9 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import vue from "vue";
+import AddressSetting from "./../components/EditProfile/AddressSetting";
 export default {
-  components: {},
+  components: { AddressSetting },
   computed: {
     ...mapState(["userProfile", "Cart", "SettingStock"]),
     getList() {
@@ -285,6 +298,9 @@ export default {
       } catch {
         return [];
       }
+    },
+    address() {
+      return Object.assign({}, this.userProfile.Address[this.addressIndex]);
     },
     newSelected() {
       return this.selected
@@ -392,10 +408,6 @@ export default {
     }
   },
   mounted() {
-    this.address = Object.assign(
-      {},
-      this.userProfile.Address[this.userProfile.defaultAddress]
-    );
     this.addressIndex =
       this.userProfile.defaultAddress == null
         ? -1
@@ -405,8 +417,8 @@ export default {
     return {
       updateDialog: false,
       addressDialog: false,
+      addressManageDialog: false,
       addressIndex: -1,
-      address: {},
       selected: [],
       updateTemp: {},
       headers: [
