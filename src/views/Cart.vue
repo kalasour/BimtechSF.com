@@ -1,5 +1,32 @@
 <template>
   <div>
+    <v-dialog width="300" v-model="updateDialog">
+      <v-card>
+        <v-card-title class="pb-0">
+          <p class="title">Has changed</p>
+          <v-spacer></v-spacer>
+          <v-icon @click="updateDialog=false" class="red--text" :style="{cursor:'pointer'}">clear</v-icon>
+        </v-card-title>
+        <v-card-text class="pt-0">
+          <div
+            class="black--text text-capitalize"
+            v-for="(item,index) in updateTemp.OpSelected"
+            :key="index"
+          >
+            <span
+              v-if="item.price!=updateTemp.newOp[index][item.id].price||item.name!=(updateTemp.newOp)[index][item.id].name"
+            >
+              {{item.name}} (${{item.price}}) ->
+              {{(updateTemp.newOp)[index][item.id].name}}
+              (${{(updateTemp.newOp)[index][item.id].price}})
+              <span
+                v-if="updateTemp.OpSelected.length-1!=index"
+              ></span>
+            </span>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-layout row wrap justify-space-around class="mt-3 mx-5">
       <v-flex xs8>
         <v-card>
@@ -79,8 +106,16 @@
                                 <span
                                   v-if="props.item.OpSelected.length-1!=index"
                                 >,</span>
+                                <span v-else>
+                                  <u
+                                    v-if="isChanged(props.item)"
+                                    @click.prevent.stop="updateHandle(props.item)"
+                                    class="red--text"
+                                  >Updated!</u>
+                                </span>
                               </span>
                             </div>
+
                             <v-layout row wrap class="my-1">
                               <div
                                 v-if="props.item.DiscountActive&&props.item.DiscountPer!=''&&props.item.DiscountPer!=null&&props.item.DiscountPer>0"
@@ -177,7 +212,7 @@
                 <v-icon>location_on</v-icon>
               </v-flex>
               <v-flex xs10>
-                <p class="mb-0">{{address.firstname}} {{address.lastname}}</p>
+                <p class="mb-0">{{address.firstname}} {{address.lastname}} {{address.phone}}</p>
                 <p class="mb-0">{{address.address}} {{address.city}} {{address.company}}</p>
                 <p>
                   {{address.state==null?'':address.state.name}}
@@ -199,7 +234,7 @@
               <p class="mb-1">${{Subtotal}}</p>
             </v-layout>
             <v-layout row wrap justify-space-between>
-              <p class="mb-1">Taxes</p>
+              <p class="mb-1">Taxes ({{SettingStock.TaxRate}}%)</p>
               <p class="mb-1">${{Taxes}}</p>
             </v-layout>
             <v-layout row wrap justify-space-between>
@@ -320,6 +355,24 @@ export default {
       if (event.target.value <= 0 || event.target.value == "") item.amount = 1;
       var payload = { value: event.target.value, id: id };
       this.updateCartAmount(payload);
+    },
+    isChanged(Item) {
+      var val = false;
+      Item.OpSelected.forEach((item, index) => {
+        if (
+          Object.values(Item.Options)[index][item.id].name != item.name ||
+          Object.values(Item.Options)[index][item.id].price != item.price
+        ) {
+          val = true;
+        }
+      });
+
+      return val;
+    },
+    updateHandle(item) {
+      this.updateTemp = item;
+      this.updateTemp.newOp = Object.values(this.updateTemp.Options);
+      this.updateDialog = true;
     }
   },
   mounted() {
@@ -330,8 +383,10 @@ export default {
   },
   data() {
     return {
+      updateDialog: false,
       address: {},
       selected: [],
+      updateTemp: {},
       headers: [
         {
           text: "Item Description",

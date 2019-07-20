@@ -353,15 +353,9 @@ export default new Vuex.Store({
                 obj.cartId = await doc.id
                 var snap = await state.Stock.find(ele => ele.id == doc.data().id)
                 if (!snap.data().isDisabled) obj = await Object.assign(obj, snap.data())
-
-                // state.Cart[index] = obj
                 Vue.set(state.Cart, index, obj)
               })
-              // var arr = await Object.assign([], state.Cart)
-              // await Vue.set(state, 'Cart', []);
-              // await Vue.set(state, 'Cart', arr)
             })
-            // state.isLoading = false
           }, err => {
           });
         } else {
