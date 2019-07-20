@@ -196,15 +196,15 @@
           <v-card-text class="pt-0">
             <v-layout row wrap justify-space-between>
               <p class="mb-1">Subtotal</p>
-              <p class="mb-1">{{Subtotal}}</p>
+              <p class="mb-1">${{Subtotal}}</p>
             </v-layout>
             <v-layout row wrap justify-space-between>
               <p class="mb-1">Taxes</p>
-              <p class="mb-1">{{Taxes}}</p>
+              <p class="mb-1">${{Taxes}}</p>
             </v-layout>
             <v-layout row wrap justify-space-between>
               <p class="mb-1">Total</p>
-              <p class="mb-1">{{Total}}</p>
+              <p class="mb-1 orange--text title">${{Total}}</p>
             </v-layout>
             <v-btn block color="orange white--text">Place order</v-btn>
           </v-card-text>
@@ -236,9 +236,13 @@ export default {
       }
     },
     newSelected() {
-      return this.selected.map(item => {
-        return this.Cart.find(ele => ele.cartId == item.cartId);
-      });
+      return this.selected
+        .map(item => {
+          return this.Cart.find(ele => ele.cartId == item.cartId);
+        })
+        .filter(function(el) {
+          return el != null;
+        });
     },
     Subtotal() {
       return this.newSelected.length == 0

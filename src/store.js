@@ -347,6 +347,7 @@ export default new Vuex.Store({
             state.userProfile = await docSnapshot.data()
             docSnapshot.ref.collection('Cart').orderBy("createdAt", "desc").onSnapshot(async (snapshot) => {
               state.Cart = Object.assign(state.Cart, snapshot.docs.map(item => item.data()))
+              if (state.Cart.length != snapshot.docs.length) state.Cart = state.Cart.slice(0, snapshot.docs.length)
               await snapshot.docs.forEach(async (doc, index) => {
                 var obj = await Object.assign({}, doc.data())
                 obj.cartId = await doc.id
