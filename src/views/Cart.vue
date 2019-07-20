@@ -1,5 +1,21 @@
 <template>
   <div>
+    <v-dialog width="900" v-model="addressDialog">
+      <v-card>
+        <v-card-title class="pb-0">
+          <span class="title">Your address</span>
+          <v-spacer></v-spacer>
+          <v-icon @click="addressDialog=false" class="red--text" :style="{cursor:'pointer'}">clear</v-icon>
+        </v-card-title>
+        <v-card-text class="pt-0">
+          <div
+            :class="(index==addressIndex?'orange':'black')+'--text my-3'"
+            v-for="(item,index) in userProfile.Address"
+            :key="index"
+          >{{item}}</div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-dialog width="300" v-model="updateDialog">
       <v-card>
         <v-card-title class="pb-0">
@@ -205,7 +221,7 @@
               </v-flex>
             </v-layout>
           </v-card-text>
-          <v-card-text class="pb-0">
+          <v-card-text @click="addressDialog=true" :style="{cursor:'pointer'}" class="pb-0">
             <p class="grey--text mb-1">Address</p>
             <v-layout row wrap>
               <v-flex xs2 class="text-xs-center">
@@ -380,10 +396,16 @@ export default {
       {},
       this.userProfile.Address[this.userProfile.defaultAddress]
     );
+    this.addressIndex =
+      this.userProfile.defaultAddress == null
+        ? -1
+        : this.userProfile.defaultAddress;
   },
   data() {
     return {
       updateDialog: false,
+      addressDialog: false,
+      addressIndex: -1,
       address: {},
       selected: [],
       updateTemp: {},
