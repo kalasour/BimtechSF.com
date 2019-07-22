@@ -40,7 +40,8 @@
               hide-details
               prepend-icon="search"
               label="Search"
-              v-model="Search"
+              v-model="tempSearch"
+              @keydown.enter="Search=tempSearch"
             ></v-text-field>
           </v-flex>
           <v-flex xs12 sm6 md1>
@@ -113,7 +114,8 @@ export default {
       subcate: [],
       Search: "",
       itemPerpage: 30,
-      page: 1
+      page: 1,
+      tempSearch: ""
     };
   },
   watch: {

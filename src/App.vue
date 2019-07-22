@@ -61,7 +61,7 @@
         <v-progress-circular :size="50" color="orange" indeterminate></v-progress-circular>
       </v-layout>
     </v-content>
-    <v-footer v-if="$route.path!='/Manager'" class="mt-5" light height="auto">
+    <v-footer v-if="$route.name!='Manager'" class="mt-5" light height="auto">
       <v-card class="flex" flat tile>
         <v-card-title class="white">
           <v-layout row wrap justify-space-around>
@@ -114,6 +114,8 @@ export default {
     Register,
     Forgot,
     EditItem
+  },
+  mounted() {
   },
   created() {},
   computed: {

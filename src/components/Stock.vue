@@ -7,8 +7,8 @@
         </v-card-title>
         <v-card-text>
           <v-layout wrap>
-            <v-flex xs3> 
-            <v-text-field color="orange" label="Tax rate(%)" type="number" v-model="taxRate"></v-text-field>
+            <v-flex xs3>
+              <v-text-field color="orange" label="Tax rate(%)" type="number" v-model="taxRate"></v-text-field>
             </v-flex>
           </v-layout>
         </v-card-text>
@@ -77,7 +77,8 @@
               hide-details
               prepend-icon="search"
               label="Search"
-              v-model="Search"
+              v-model="tempSearch"
+              @keydown.enter="Search=tempSearch"
             ></v-text-field>
           </v-flex>
           <v-flex xs12 sm6 md1>
@@ -123,7 +124,8 @@ export default {
       Search: "",
       itemPerpage: 30,
       page: 1,
-      taxRate: 0
+      taxRate: 0,
+      tempSearch: ""
     };
   },
   computed: {

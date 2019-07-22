@@ -38,7 +38,8 @@
             v-if="userProfile.isAdmin"
             absolute
             color="grey darken-3"
-            class="white--text mt-4"
+            :style="{top:'0%',left:'0%'}"
+            class="white--text"
             left
             top
             @click.stop.prevent="deleteItem()"
@@ -49,7 +50,8 @@
             v-if="userProfile.isAdmin"
             absolute
             color="orange"
-            class="white--text mt-4"
+            :style="{top:'0%',right:'0%'}"
+            class="white--text"
             right
             top
             @click.stop.prevent="editItem({...Item,id:ID})"
@@ -69,7 +71,7 @@
             @click.stop.prevent="AddToCart(ID)"
           >
             <v-icon>add_shopping_cart</v-icon>
-          </v-btn> -->
+          </v-btn>-->
           <!-- <v-responsive :aspect-ratio="16/4"> -->
           <h4 class="headline font-weight-light mb-2 text-truncate">{{Item.name}}</h4>
           <!-- </v-responsive> -->
@@ -77,7 +79,28 @@
             Description :
             <p class="text-truncate mb-0">{{Item.description}}</p>
           </div>
-          <h3 class="display-1 font-weight-light orange--text mb-2">{{Item.price}} $</h3>
+          <s v-if="Item.DiscountActive" class="grey--text caption mb-0">${{nonDiscountPrice}}</s>
+          <v-layout row wrap align-center align-content-center>
+            <v-flex 6 xs>
+              <h3 class="display-1 font-weight-light orange--text mb-2">{{Price}} $</h3>
+            </v-flex>
+            <v-flex xs3>
+              <div
+                v-if="Item.DiscountActive&&Item.DiscountPer!=''&&Item.DiscountPer!=null&&Item.DiscountPer>0"
+                class="mx-1 orange white--text"
+              >
+                <span class="mx-2">- {{Item.DiscountPer}} %</span>
+              </div>
+            </v-flex>
+            <v-flex xs3>
+              <div
+                v-if="Item.DiscountActive&&Item.DiscountAmount!=null&&Item.DiscountAmount!=''&&Item.DiscountAmount>0"
+                class="mx-1 orange white--text"
+              >
+                <span class="mx-2">- {{Item.DiscountAmount}} $</span>
+              </div>
+            </v-flex>
+          </v-layout>
         </v-card-text>
       </v-card>
       <v-card
@@ -106,7 +129,22 @@ export default {
   data: () => ({}),
   components: {},
   computed: {
-    ...mapState(["userProfile"])
+    ...mapState(["userProfile"]),
+    Price() {
+      return this.Item.DiscountActive
+        ? this.nonDiscountPrice -
+            (this.Item.DiscountAmount == "" || this.Item.DiscountAmount == null
+              ? 0
+              : this.Item.DiscountAmount) -
+            (this.Item.DiscountPer == "" || this.Item.DiscountPer == null
+              ? 0
+              : (parseFloat(this.Item.DiscountPer) / 100) *
+                this.nonDiscountPrice)
+        : this.nonDiscountPrice;
+    },
+    nonDiscountPrice() {
+      return parseFloat(this.Item.price).toFixed(2);
+    }
   },
   props: {
     Item: Object,

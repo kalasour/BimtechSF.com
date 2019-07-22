@@ -2,6 +2,7 @@ import * as firebase from 'firebase/app'
 require("firebase/auth");
 require("firebase/firestore");
 require("firebase/storage");
+
 var firebaseConfig = {
     apiKey: "AIzaSyAUQKhtHmG1umeZIQb0nivKoy756TS66Io",
     authDomain: "bimtechsf.firebaseapp.com",
@@ -16,4 +17,4 @@ firebase.initializeApp(firebaseConfig);
 const firestore = firebase.firestore()
 const auth = firebase.auth()
 const storage = firebase.storage();
-export { auth,firestore,storage, firebase as default }
+export { auth, firestore, storage, firebase as default }

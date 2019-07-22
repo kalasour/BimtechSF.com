@@ -5,6 +5,12 @@
         <v-card :style="{'border-radius':'10px'}">
           <v-card-text>
             <form class="mx-4" @submit.prevent="submit">
+               <v-text-field
+                color="orange"
+                label="User Id"
+                :value="user.uid"
+                disabled
+              ></v-text-field>
               <v-text-field
                 color="orange"
                 v-model="name"

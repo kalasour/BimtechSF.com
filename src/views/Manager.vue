@@ -2,7 +2,7 @@
   <div v-if="userProfile.isAdmin">
     <StockPage v-if="bottomNav==0" />
     <v-footer></v-footer>
-    <v-bottom-nav fixed :active.sync="bottomNav" :color="color" :value="true"  dark shift>
+    <v-bottom-nav fixed :active.sync="bottomNav" :color="color" :value="true" dark shift>
       <v-btn dark to="/Manager/Stock">
         <span>Stocks</span>
         <v-icon>table_chart</v-icon>
@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import StockPage from '../components/Stock'
+import StockPage from "../components/Stock";
 import { mapState, mapMutations } from "vuex";
-import Vue from 'vue'
+import Vue from "vue";
 export default {
   data() {
     return {
@@ -37,7 +37,13 @@ export default {
     };
   },
   created() {
-    this.bottomNav = 0;
+    var state = this.$route.params.state;
+    if (state == null || state == "Stock") {
+      this.bottomNav = 0;
+    }
+    if (state == "User") {
+      this.bottomNav = 1;
+    }
   },
   components: {
     StockPage
@@ -75,7 +81,7 @@ export default {
     // this.Authen();
   },
   methods: {
-    ...mapMutations(['setLoading']),
+    ...mapMutations(["setLoading"])
   }
 };
 </script>

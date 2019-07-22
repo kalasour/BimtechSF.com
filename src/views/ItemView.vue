@@ -1,7 +1,7 @@
 <template>
   <v-layout justify-center>
     <v-flex xs10>
-      <v-card class="my-5">
+      <v-card :style="{'border-radius':'10px'}" class="my-5">
         <v-layout justify-space-between row wrap>
           <v-flex xs5 class="mx-3 pb-3">
             <v-img height="500" contain :src="mainImg">
@@ -14,7 +14,7 @@
             <v-card class="elevation-0">
               <v-layout justify-center v-if="Item.imgs!=null" class="mx-3" row wrap>
                 <v-flex xs3 v-for="(img,i) in imgsList" :key="i">
-                  <div v-if="img==mainImg" class="pa-1 orange">
+                  <div :style="{'border-radius':'5px'}" v-if="img==mainImg" class="pa-1 orange">
                     <v-img
                       class="white"
                       height="100"
@@ -73,7 +73,7 @@
           </v-flex>
           <v-flex xs6 class="mt-3 mr-5">
             <p class="title">{{Item.name}}</p>
-            <div class="grey lighten-4">
+            <div :style="{'border-radius':'10px'}" class="grey lighten-4">
               <v-layout row wrap align-center>
                 <s
                   v-if="Item.DiscountActive"
@@ -174,7 +174,6 @@
                   auto-grow
                   readonly
                   label="Description :"
-                  outline
                   class="mt-0"
                   hide-details
                   rows="2"
@@ -194,6 +193,15 @@
           <v-icon>edit</v-icon>
         </v-btn>
       </v-card>
+
+      <v-card :style="{'border-radius':'10px'}" class="mt-5 mb-2">
+        <v-card-title>
+          <p class="mb-0 title">RELATED ITEMS</p>
+        </v-card-title>
+      </v-card>
+      <v-layout row wrap justify-space-around>
+        <ItemCard v-for="item in list" :key="item.id" :ID="item.id" :Item="item.data()" />
+      </v-layout>
     </v-flex>
   </v-layout>
 </template>
@@ -241,6 +249,9 @@ export default {
     }
   },
   computed: {
+    list() {
+      return this.Stock.slice(0, 9);
+    },
     imgsList() {
       return this.Item.imgs.slice(this.imgCount, this.imgCount + 4);
     },
