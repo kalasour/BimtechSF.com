@@ -6,7 +6,7 @@
           <v-icon>format_list_bulleted</v-icon>
           <span class="title px-2">Categories</span>
         </div>
-        <v-divider></v-divider>
+        <v-divider class="my-2 mx-3"></v-divider>
         <v-layout class="px-2 py-0">
           <v-btn
             flat
@@ -30,6 +30,56 @@
             <span v-if="item.id==subKey" class="body-1 px-2 orange--text">{{item.name}}</span>
             <span v-else class="body-1 px-2">{{item.name}}</span>
           </v-btn>
+        </v-layout>
+        <v-divider class="my-2 mx-3"></v-divider>
+        <v-layout row wrap>
+          <v-card :style="{'border-radius':'10px'}" class="mx-3 my-2 py-2">
+            <v-flex xs12 class="text-xs-center">
+              <span class="title px-2">Price range</span>
+            </v-flex>
+            <v-flex class="mx-3" xs12>
+              <v-layout row wrap align-center align-content-center justify-center>
+                <v-flex xs12 class="mx-3">
+                  <v-text-field
+                    color="orange"
+                    class="centered-input"
+                    flat
+                    v-model="TpriceStart"
+                    placeholder="lowest"
+                    @keypress="isNumber"
+                    clearable
+                    hide-details
+                    solo
+                  >
+                    <template v-slot:prepend-inner>$</template>
+                  </v-text-field>
+                </v-flex>
+                <v-flex xs11>
+                  <v-divider></v-divider>
+                </v-flex>
+                <v-flex class="mx-3" xs12>
+                  <v-text-field
+                    flat
+                    color="orange"
+                    clearable
+                    hide-details
+                    placeholder="highest"
+                    class="centered-input"
+                    v-model="TpriceEnd"
+                    solo
+                    @keypress="isNumber"
+                  >
+                    <template v-slot:prepend-inner>$</template>
+                  </v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-btn
+                block
+                @click="priceStart=TpriceStart;priceEnd=TpriceEnd;"
+                color="orange white--text"
+              >filter</v-btn>
+            </v-flex>
+          </v-card>
         </v-layout>
       </v-flex>
       <v-flex xs12 sm6 md10>
@@ -101,6 +151,15 @@ export default {
               .name.toLowerCase()
               .search(this.Search.toLowerCase()) != -1
         )
+        .filter(
+          ele =>
+            (this.priceStart == "" ||
+              this.priceStart == null ||
+              parseFloat(ele.data().price) >= parseFloat(this.priceStart)) &&
+            (this.priceEnd == "" ||
+              this.priceEnd == null ||
+              parseFloat(ele.data().price) <= parseFloat(this.priceEnd))
+        )
         .sort((item1, item2) =>
           item1.data().name.localeCompare(item2.data().name)
         );
@@ -111,6 +170,10 @@ export default {
   },
   data() {
     return {
+      priceStart: "",
+      priceEnd: "",
+      TpriceStart: "",
+      TpriceEnd: "",
       subcate: [],
       Search: "",
       itemPerpage: 30,
@@ -139,6 +202,12 @@ export default {
   },
   methods: {
     ...mapMutations(["setLoading"]),
+    isNumber(event) {
+      var ch = String.fromCharCode(event.which);
+      if (!/[0-9]/.test(ch)) {
+        event.preventDefault();
+      }
+    },
     GetData() {
       return this.Stock.filter(element => {
         var el = element.data();

@@ -292,7 +292,7 @@ export default {
     ...mapMutations(["editItem", "AddToCart", "View"]),
     isNumber(event) {
       var ch = String.fromCharCode(event.which);
-      if (!/[1-9]/.test(ch)) {
+      if (!/[0-9]/.test(ch)) {
         event.preventDefault();
       }
     }
