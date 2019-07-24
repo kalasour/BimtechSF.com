@@ -1,7 +1,30 @@
 <template>
   <v-layout justify-center>
     <v-flex xs10>
-      <v-card :style="{'border-radius':'10px'}" class="my-5">
+      <v-breadcrumbs
+        class="pb-2"
+        v-if="Cate!=null"
+        color="orange"
+        :items="[ {
+          text: 'RestaurantSupply',
+          disabled: false,
+          href: '/RestaurantSupply/',
+        }, {
+          text: Cate.name,
+          disabled: false,
+          href: '/RestaurantSupply/'+Cate.name,
+        }]"
+      >
+        <template v-slot:item="props">
+          <v-breadcrumbs-item :to="props.item.href" :class="[props.item.disabled && 'disabled']">
+            <span class="black--text">{{ props.item.text.toUpperCase() }}</span>
+          </v-breadcrumbs-item>
+        </template>
+        <template v-slot:divider>
+          <v-icon>keyboard_arrow_right</v-icon>
+        </template>
+      </v-breadcrumbs>
+      <v-card :style="{'border-radius':'10px'}" class="mb-5">
         <v-layout justify-space-between row wrap>
           <v-flex xs5 class="mx-3 pb-3">
             <v-img height="500" contain :src="mainImg">
@@ -276,12 +299,19 @@ export default {
   },
   computed: {
     list() {
-      return this.Stock.slice(0, 9);
+      return this.Stock.filter(
+        ele =>
+          ele.data().cate.indexOf(this.Item.cate[0]) != -1 &&
+          ele.id != this.Doc.id
+      ).slice(0, 9);
     },
     imgsList() {
       return this.Item.imgs.slice(this.imgCount, this.imgCount + 4);
     },
-    ...mapState(["Stock", "userProfile"]),
+    Cate() {
+      return this.listCate.find(ele => ele.id == this.Item.cate[0]);
+    },
+    ...mapState(["Stock", "userProfile", "listCate"]),
     Doc() {
       return this.Stock.find(
         ele =>
