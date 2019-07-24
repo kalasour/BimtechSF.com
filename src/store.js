@@ -28,6 +28,17 @@ export default new Vuex.Store({
     SettingStock: {}
   },
   mutations: {
+    View(state, payload) {
+      if (payload.data().view == null) {
+        payload.ref.update({
+          view: 1
+        })
+      } else {
+        payload.ref.update({
+          view: firebase.firestore.FieldValue.increment(1)
+        })
+      }
+    },
     ApplySettingStock(state, payload) {
       state.isLoading = true
       firestore.collection('Settings').doc('Stock').set(payload, { merge: true }).then(() => { state.isLoading = false })
@@ -150,7 +161,11 @@ export default new Vuex.Store({
         if (typeof (e) != 'string') {
           await User.updateEmail(user.email)
           await User.sendEmailVerification()
-          await firestore.collection('Users').doc(User.uid).update({ lastname: user.lastname })
+          await firestore.collection('Users').doc(User.uid).update({
+            lastname: user.lastname,
+            displayName: user.name,
+            email: user.email
+          })
           await User.updateProfile({
             displayName: user.name,
           })
@@ -280,6 +295,8 @@ export default new Vuex.Store({
           auth.currentUser.sendEmailVerification()
           firestore.collection('Users').doc(auth.currentUser.uid).set({
             lastname: user.lastname,
+            displayName: user.name,
+            email: user.email
           })
           state.dialogRegister = false;
         }

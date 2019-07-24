@@ -72,7 +72,25 @@
             </v-card>
           </v-flex>
           <v-flex xs6 class="mt-3 mr-5">
-            <p class="title">{{Item.name}}</p>
+            <p class="mb-0 headline">{{Item.name}}</p>
+            <v-layout align-content-center align-center row wrap>
+              <u class="orange--text title">{{rating}}</u>
+              <v-rating
+                half-increments
+                readonly
+                color="orange "
+                background-color="orange"
+                v-model="rating"
+              ></v-rating>
+              <v-divider vertical class="my-1"></v-divider>
+              <p class="mb-0 mx-3 grey--text">
+                <b class="mb-0 black--text">{{Item.sold==null?0:Item.sold}}</b> sold
+              </p>
+              <v-divider vertical class="my-1"></v-divider>
+              <p class="mb-0 ml-3 grey--text">
+                <b class="mb-0 black--text">{{Item.view==null?0:Item.view}}</b> views
+              </p>
+            </v-layout>
             <div :style="{'border-radius':'10px'}" class="grey lighten-4">
               <v-layout row wrap align-center>
                 <s
@@ -186,20 +204,17 @@
           v-if="userProfile.isAdmin"
           absolute
           color="orange"
-          class="white--text mt-4"
-          :style="{top:'-4%',right:'0%'}"
+          class="white--text"
+          :style="{top:'0%',right:'0%'}"
           @click.stop.prevent="editItem({...Item,id:ID})"
         >
           <v-icon>edit</v-icon>
         </v-btn>
       </v-card>
 
-      <v-card :style="{'border-radius':'10px'}" class="mt-5 mb-2">
-        <v-card-title>
-          <p class="mb-0 title">RELATED ITEMS</p>
-        </v-card-title>
-      </v-card>
-      <v-layout row wrap justify-space-around>
+      <p class="mb-2 title">RELATED ITEMS</p>
+      <v-divider></v-divider>
+      <v-layout class="mx-3" row wrap justify-space-around>
         <ItemCard v-for="item in list" :key="item.id" :ID="item.id" :Item="item.data()" />
       </v-layout>
     </v-flex>
@@ -216,6 +231,7 @@ import { mapState, mapMutations } from "vuex";
 export default {
   components: {},
   created() {
+    if (this.Doc != null) this.View(this.Doc);
     if (this.Item.Options != null)
       Object.keys(this.Item.Options).forEach((key, index) => {
         if (this.Item.Options[key].length != 0) {
@@ -231,16 +247,26 @@ export default {
         ? "https://via.placeholder.com/350"
         : this.Item.imgs[0];
   },
+  watch: {
+    Item: function() {
+      window.scrollTo(0, 0);
+      this.mainImg =
+        this.Item.imgs == null
+          ? "https://via.placeholder.com/350"
+          : this.Item.imgs[0];
+    }
+  },
   data() {
     return {
       OpArray: [],
       amount: 1,
       mainImg: "",
-      imgCount: 0
+      imgCount: 0,
+      rating: 3.5
     };
   },
   methods: {
-    ...mapMutations(["editItem", "AddToCart"]),
+    ...mapMutations(["editItem", "AddToCart", "View"]),
     isNumber(event) {
       var ch = String.fromCharCode(event.which);
       if (!/[1-9]/.test(ch)) {
@@ -257,12 +283,14 @@ export default {
     },
     ...mapState(["Stock", "userProfile"]),
     Doc() {
-      return this.Stock.find(ele => ele.id == this.$route.params.id);
+      return this.Stock.find(
+        ele =>
+          ele.id == this.$route.params.id &&
+          (this.userProfile.isAdmin || !ele.data().isDisabled)
+      );
     },
     Item() {
-      return this.userProfile.isAdmin || !this.Doc.data().isDisabled
-        ? this.Doc.data()
-        : null;
+      return !(this.Doc == null) ? this.Doc.data() : null;
     },
     ID() {
       return this.userProfile.isAdmin || !this.Doc.data().isDisabled

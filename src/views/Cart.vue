@@ -274,7 +274,6 @@
         </v-card>
       </v-flex>
     </v-layout>
-    {{newSelected}}
   </div>
 </template>
 <style>
