@@ -237,8 +237,10 @@
 
       <p class="mb-2 title">RELATED ITEMS</p>
       <v-divider></v-divider>
-      <v-layout class="mx-3" row wrap justify-space-around>
-        <ItemCard v-for="item in list" :key="item.id" :ID="item.id" :Item="item.data()" />
+      <v-layout row wrap justify-center>
+        <v-flex xs10 md4 lg3 v-for="item in list" :key="item.id">
+          <ItemCard class="mx-2 my-2" :ID="item.id" :Item="item.data()" />
+        </v-flex>
       </v-layout>
     </v-flex>
   </v-layout>
@@ -303,7 +305,7 @@ export default {
         ele =>
           ele.data().cate.indexOf(this.Item.cate[0]) != -1 &&
           ele.id != this.Doc.id
-      ).slice(0, 9);
+      ).slice(0, 8);
     },
     imgsList() {
       return this.Item.imgs.slice(this.imgCount, this.imgCount + 4);

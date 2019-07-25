@@ -42,8 +42,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-layout row wrap>
-      <v-flex xs12 sm6 md3>
+    <v-layout row wrap justify-center>
+      <v-flex xs12 sm6 md3 lg3>
         <p
           :style="{ cursor: 'pointer'}"
           @click="setTagKey(null)"
@@ -69,7 +69,7 @@
           <v-icon class="px-1 text-md-center" large @click="createCate(null)">create_new_folder</v-icon>
         </div>
       </v-flex>
-      <v-flex xs12 sm6 md9>
+      <v-flex xs12 sm6 md9 lg8>
         <v-layout row wrap align-end align-content-end>
           <v-flex xs12 sm6 md3>
             <v-text-field
@@ -94,8 +94,14 @@
             <v-icon :style="{cursor:'pointer'}" @click="settingDialog=true" large>settings</v-icon>
           </v-flex>
         </v-layout>
-        <ItemCard :Item="null" />
-        <ItemCard v-for="item in list" :key="item.id" :Item="item.data()" :ID="item.id" />
+        <v-layout row wrap>
+          <v-flex xs10 md4 lg4>
+            <ItemCard :Item="null" />
+          </v-flex>
+          <v-flex xs10 md4 lg4 v-for="item in list" :key="item.id">
+            <ItemCard class="mx-2 my-2" :ID="item.id" :Item="item.data()" />
+          </v-flex>
+        </v-layout>
       </v-flex>
       <v-layout justify-center>
         <v-pagination

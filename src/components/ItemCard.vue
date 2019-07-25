@@ -5,15 +5,11 @@
         v-if="Item!=null"
         slot-scope="{ hover }"
         :class="`elevation-${hover ? 12 : 2}`"
-        class="mx-3 left my-3"
-        width="300"
+        width="100%"
         height="350"
         :to="'/Item/'+ID"
       >
-        <v-img
-          :aspect-ratio="16/9"
-          :src="Item.imgs==null?'https://via.placeholder.com/350':Item.imgs[0]"
-        >
+        <v-img :src="Item.imgs==null?'https://via.placeholder.com/350':Item.imgs[0]" height="220">
           <template v-slot:placeholder>
             <v-layout fill-height align-center justify-center ma-0>
               <v-progress-circular indeterminate color="orange"></v-progress-circular>
@@ -58,8 +54,22 @@
           >
             <v-icon>edit</v-icon>
           </v-btn>
+          <v-layout :style="{position: 'absolute',bottom:'2%',right:'2%'}" row wrap>
+            <div
+              v-if="Item.DiscountActive&&Item.DiscountPer!=''&&Item.DiscountPer!=null&&Item.DiscountPer>0"
+              class="mx-1 orange white--text text-xs-center"
+            >
+              <span class="mx-2 caption">- {{Item.DiscountPer}} %</span>
+            </div>
+            <div
+              v-if="Item.DiscountActive&&Item.DiscountAmount!=null&&Item.DiscountAmount!=''&&Item.DiscountAmount>0"
+              class="mx-1 orange white--text text-xs-center"
+            >
+              <span class="mx-2 caption">- {{Item.DiscountAmount}} $</span>
+            </div>
+          </v-layout>
         </v-img>
-        <v-card-text class="pt-4" style="position: relative;">
+        <v-card-text class="pt-4 pb-0" style="position: relative;">
           <!-- <v-btn
             absolute
             color="orange"
@@ -76,46 +86,28 @@
           <h4 class="headline font-weight-light mb-2 text-truncate">{{Item.name}}</h4>
           <!-- </v-responsive> -->
           <div class="font-weight-light grey--text subheading mb-2">
-            Description :
-            <p class="text-truncate mb-0">{{Item.description}}</p>
+            <p class="text-truncate mb-0">Description : {{Item.description}}</p>
           </div>
-          <s v-if="Item.DiscountActive" class="grey--text caption mb-0">${{nonDiscountPrice}}</s>
-          <v-layout row wrap align-center align-content-center>
-            <v-flex 6 xs>
-              <h3 class="display-1 font-weight-light orange--text mb-2">{{Price}} $</h3>
-            </v-flex>
-            <v-flex xs3>
-              <div
-                v-if="Item.DiscountActive&&Item.DiscountPer!=''&&Item.DiscountPer!=null&&Item.DiscountPer>0"
-                class="mx-1 orange white--text"
-              >
-                <span class="mx-2">- {{Item.DiscountPer}} %</span>
-              </div>
-            </v-flex>
-            <v-flex xs3>
-              <div
-                v-if="Item.DiscountActive&&Item.DiscountAmount!=null&&Item.DiscountAmount!=''&&Item.DiscountAmount>0"
-                class="mx-1 orange white--text"
-              >
-                <span class="mx-2">- {{Item.DiscountAmount}} $</span>
-              </div>
-            </v-flex>
-          </v-layout>
         </v-card-text>
+        <v-card-actions class="py-0 mx-2">
+          <v-layout row wrap align-center>
+            <s v-if="Item.DiscountActive" class="grey--text display-1 mr-1">${{nonDiscountPrice}}</s>
+            <p class="display-1 font-weight-light orange--text mb-0">{{Price}} $</p>
+          </v-layout>
+        </v-card-actions>
       </v-card>
       <v-card
         :style="{ cursor: 'pointer'}"
         @click="addItem"
         :class="`elevation-${hover ? 12 : 2}`"
         v-else
-        class="justify-center mx-3 left my-3"
-        width="300"
+        width="100%"
         height="350"
       >
-        <div class="mt-5">
+        <div class="mt-2 pt-5">
           <v-img contain max-height="125" :src="require('./../assets/add.png')"></v-img>
         </div>
-        <div class="mt-5">
+        <div class="pt-5">
           <p class="orange--text text-xs-center title">Add item</p>
         </div>
       </v-card>
@@ -132,7 +124,8 @@ export default {
     ...mapState(["userProfile"]),
     Price() {
       return this.Item.DiscountActive
-        ? this.nonDiscountPrice -
+        ? (
+            this.nonDiscountPrice -
             (this.Item.DiscountAmount == "" || this.Item.DiscountAmount == null
               ? 0
               : this.Item.DiscountAmount) -
@@ -140,6 +133,7 @@ export default {
               ? 0
               : (parseFloat(this.Item.DiscountPer) / 100) *
                 this.nonDiscountPrice)
+          ).toFixed(2)
         : this.nonDiscountPrice;
     },
     nonDiscountPrice() {

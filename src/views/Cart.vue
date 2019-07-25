@@ -2,11 +2,11 @@
   <div>
     <v-dialog width="1200" v-model="addressManageDialog">
       <v-card>
-      <AddressSetting />
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn @click="addressManageDialog=false" flat color="secondary">Close</v-btn>
-      </v-card-actions>
+        <AddressSetting />
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="addressManageDialog=false" flat color="secondary">Close</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog width="900" v-model="addressDialog">
@@ -79,8 +79,14 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-layout row wrap justify-space-around class="mt-3 mx-5">
-      <v-flex xs8>
+    <v-layout
+      row
+      wrap
+      justify-space-around
+      class="mt-3"
+      :class="{'mx-0': $vuetify.breakpoint.xsAndUp, 'mx-5': $vuetify.breakpoint.lgAndUp}"
+    >
+      <v-flex xs12 lg8>
         <v-card>
           <v-card-title class="pb-0">
             <p class="title mb-3">Your cart</p>
@@ -231,8 +237,8 @@
           </v-card-text>
         </v-card>
       </v-flex>
-      <v-flex xs3>
-        <v-card :style="{position: 'fixed',width:'23%'}">
+      <v-flex xs10 lg3>
+        <v-card v-if="$vuetify.breakpoint.lgAndUp" :style="{position: 'fixed',width:'23%'}">
           <v-card-text @click="addressDialog=true" :style="{cursor:'pointer'}" class="pb-0">
             <p class="grey--text mb-1">Address</p>
             <v-layout row wrap>
@@ -274,6 +280,46 @@
         </v-card>
       </v-flex>
     </v-layout>
+    <v-card :style="{position:'sticky',bottom:'0%',left:'0%',width:'100%'}" v-if="$vuetify.breakpoint.xs" class="mt-3">
+      <v-card-text @click="addressDialog=true" :style="{cursor:'pointer'}" class="pb-0">
+        <p class="grey--text mb-1">Address</p>
+        <v-layout row wrap>
+          <v-flex xs2 class="text-xs-center">
+            <v-icon>location_on</v-icon>
+          </v-flex>
+          <v-flex xs10>
+            <p class="mb-0">{{address.firstname}} {{address.lastname}} {{address.phone}}</p>
+            <p class="mb-0">{{address.address}} {{address.city}} {{address.company}}</p>
+            <p>
+              {{address.state==null?'':address.state.name}}
+              <span
+                v-if="address.type!=null"
+              >({{address.type}})</span>
+              {{address.zip}}
+            </p>
+          </v-flex>
+        </v-layout>
+      </v-card-text>
+      <v-divider class="mx-3"></v-divider>
+      <v-card-title class="pb-3">
+        <p class="title mb-1">Summary</p>
+      </v-card-title>
+      <v-card-text class="pt-0">
+        <v-layout row wrap justify-space-between>
+          <p class="mb-1">Subtotal</p>
+          <p class="mb-1">${{Subtotal}}</p>
+        </v-layout>
+        <v-layout row wrap justify-space-between>
+          <p class="mb-1">Taxes ({{SettingStock.TaxRate}}%)</p>
+          <p class="mb-1">${{Taxes}}</p>
+        </v-layout>
+        <v-layout row wrap justify-space-between>
+          <p class="mb-1">Total</p>
+          <p class="mb-1 orange--text title">${{Total}}</p>
+        </v-layout>
+        <v-btn block color="orange white--text">Place order</v-btn>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 <style>

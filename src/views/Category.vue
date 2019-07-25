@@ -1,7 +1,7 @@
 <template>
   <v-container fluid grid-list-md>
-    <v-layout row wrap>
-      <v-flex xs12 sm6 md2>
+    <v-layout row wrap justify-center>
+      <v-flex xs12 sm4 md2 lg2>
         <div>
           <v-icon>format_list_bulleted</v-icon>
           <span class="title px-2">Categories</span>
@@ -20,16 +20,17 @@
           </v-btn>
         </v-layout>
         <v-layout v-for="(item,index) in subcate" :key="index" class="px-3 py-0">
-          <v-btn
+          <router-link
+            :style="{'text-decoration': 'none'}"
             flat
             class="pa-0 ma-0"
             :to="{name:'RestaurantSupplySubcate',params:{cate:$route.params.cate,subcate:item.name}}"
           >
             <v-icon v-if="item.id==subKey" small class="orange--text">trip_origin</v-icon>
-            <v-icon v-else small>trip_origin</v-icon>
+            <v-icon v-else small class="black--text">trip_origin</v-icon>
             <span v-if="item.id==subKey" class="body-1 px-2 orange--text">{{item.name}}</span>
-            <span v-else class="body-1 px-2">{{item.name}}</span>
-          </v-btn>
+            <span v-else class="body-1 black--text px-2">{{item.name}}</span>
+          </router-link>
         </v-layout>
         <v-divider class="my-2 mx-3"></v-divider>
         <v-layout row wrap>
@@ -82,7 +83,7 @@
           </v-card>
         </v-layout>
       </v-flex>
-      <v-flex xs12 sm6 md10>
+      <v-flex xs12 sm6 md10 lg8>
         <v-layout row wrap>
           <v-flex xs12 sm6 md3>
             <v-text-field
@@ -103,7 +104,11 @@
             ></v-select>
           </v-flex>
         </v-layout>
-        <ItemCard v-for="item in list" :key="item.id" :ID="item.id" :Item="item.data()" />
+        <v-layout row wrap justify-center>
+          <v-flex xs10 md4 lg4 v-for="item in list" :key="item.id">
+            <ItemCard class="mx-2 my-2" :ID="item.id" :Item="item.data()" />
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
     <div class="text-xs-center">
