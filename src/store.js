@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { firestore, auth, storage } from './firebase'
+import { firestore, auth, storage, functions } from './firebase'
 import firebase from './firebase'
 import router from './router'
 import { async } from '@firebase/util';
+import axios from 'axios';
 const uuidv1 = require('uuid/v1');
 Vue.use(Vuex)
 
@@ -38,6 +39,21 @@ export default new Vuex.Store({
           view: firebase.firestore.FieldValue.increment(1)
         })
       }
+    },
+    CreateCard(state, payload) {
+      axios({
+        method: 'post',
+        url: 'https://us-central1-bimtechsf.cloudfunctions.net/Express/CreateCard', 
+        data: {
+          message: 'Hello'
+        }
+      })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     ApplySettingStock(state, payload) {
       state.isLoading = true

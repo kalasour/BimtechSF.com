@@ -96,7 +96,6 @@
     </v-footer>
   </v-app>
 </template>
-
 <script>
 import { mapMutations, mapState } from "vuex";
 import Loading from "./components/Loading";
@@ -115,8 +114,7 @@ export default {
     Forgot,
     EditItem
   },
-  mounted() {
-  },
+  mounted() {},
   created() {},
   computed: {
     ...mapState(["Stock", "isLoading", "Categories", "snackbar", "snackbarmsg"])
