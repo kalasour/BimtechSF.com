@@ -41,19 +41,24 @@ export default new Vuex.Store({
       }
     },
     CreateCard(state, payload) {
-      axios({
-        method: 'post',
-        url: 'https://us-central1-bimtechsf.cloudfunctions.net/Express/CreateCard', 
-        data: {
-          message: 'Hello'
-        }
-      })
-        .then((response) => {
-          console.log(response.data);
+      state.user.getIdToken(true).then((token) => {
+        axios({
+          method: 'post',
+          url: 'https://us-central1-bimtechsf.cloudfunctions.net/Express/CreateCard',
+          data: {
+            userTk: token,
+            cardTk: payload
+          }
         })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }).catch(function (err) {
+        console.error(err);
+      });
     },
     ApplySettingStock(state, payload) {
       state.isLoading = true

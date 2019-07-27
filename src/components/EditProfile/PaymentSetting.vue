@@ -35,7 +35,7 @@
           </div>
 
           <div class="col s12 place-order-button-block">
-            <v-btn class="orange white--text" @click="Enter">Place Order</v-btn>
+            <v-btn class="orange white--text" @click="Enter">Add card</v-btn>
             <v-btn class="orange white--text" @click="Change">test</v-btn>
           </div>
         </section>
@@ -72,28 +72,13 @@ export default {
       this.CreateCard({ data: "test" });
     },
     Enter() {
-      console.log(this.cardNumberElement);
-      stripe
-        .createPaymentMethod("card", this.cardNumberElement, {
-          billing_details: {
-            name: "Jenny Rosen"
-          }
-        })
-        .then(function(result) {
-          // Handle result.error or result.paymentMethod
-          console.log(result.paymentMethod);
-        });
-      // stripe.createToken(this.cardNumberElement).then(result => {
-      //   if (result.error) {
-      //     this.stripeValidationError = result.error.message;
-      //   } else {
-      //     var stripeObject = {
-      //       amount: this.amount,
-      //       source: result.token
-      //     };
-      //     console.log(stripeObject);
-      //   }
-      // });
+      stripe.createToken(this.cardNumberElement).then(result => {
+        if (result.error) {
+          this.stripeValidationError = result.error.message;
+        } else {
+          this.CreateCard(result.token);
+        }
+      });
     },
     createAndMountFormElement() {
       var elements = stripe.elements();
