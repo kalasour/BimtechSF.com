@@ -96,6 +96,8 @@
     </v-footer>
   </v-app>
 </template>
+
+
 <script>
 import { mapMutations, mapState } from "vuex";
 import Loading from "./components/Loading";

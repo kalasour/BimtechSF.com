@@ -12,6 +12,7 @@
     "core-js": "^2.6.5",
     "firebase": "^6.1.0",
     "nprogress": "^0.2.0",
+    "payment-icons": "^1.2.1",
     "stripe": "^7.5.0",
     "uuid": "^3.3.2",
     "vue": "^2.6.10",

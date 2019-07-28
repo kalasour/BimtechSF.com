@@ -40,6 +40,50 @@ export default new Vuex.Store({
         })
       }
     },
+    DeleteCard(state, payload) {
+      state.isLoading = true
+      state.user.getIdToken(true).then((token) => {
+        axios({
+          method: 'post',
+          url: 'https://us-central1-bimtechsf.cloudfunctions.net/Express/DeleteCard',
+          data: {
+            userTk: token,
+            cardTk: payload
+          }
+        })
+          .then((response) => {
+            console.log(response.data);
+            state.isLoading = false
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }).catch(function (err) {
+        console.error(err);
+      });
+    },
+    ChangeDefaultCard(state, payload) {
+      state.isLoading = true
+      state.user.getIdToken(true).then((token) => {
+        axios({
+          method: 'post',
+          url: 'https://us-central1-bimtechsf.cloudfunctions.net/Express/ChangeDefaultCard',
+          data: {
+            userTk: token,
+            cardTk: payload
+          }
+        })
+          .then((response) => {
+            console.log(response.data);
+            state.isLoading = false
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }).catch(function (err) {
+        console.error(err);
+      });
+    },
     CreateCard(state, payload) {
       state.user.getIdToken(true).then((token) => {
         axios({
@@ -382,7 +426,8 @@ export default new Vuex.Store({
           state.user = user
           state.isLogin = true;
           firestore.collection('Users').doc(state.user.uid).onSnapshot(async docSnapshot => {
-            state.userProfile = await docSnapshot.data()
+            Vue.set(state, 'userProfile', docSnapshot.data())
+            // state.userProfile = await docSnapshot.data()
             docSnapshot.ref.collection('Cart').orderBy("createdAt", "desc").onSnapshot(async (snapshot) => {
               state.Cart = Object.assign(state.Cart, snapshot.docs.map(item => item.data()))
               if (state.Cart.length != snapshot.docs.length) state.Cart = state.Cart.slice(0, snapshot.docs.length)
