@@ -100,9 +100,9 @@ export default {
     this.createAndMountFormElement();
   },
   methods: {
-    ...mapMutations(["CreateCard", "ChangeDefaultCard","DeleteCard"]),
-    deleteCard(item){
-        this.$confirm("Do you really want to delete?").then(res => {
+    ...mapMutations(["CreateCard", "ChangeDefaultCard", "DeleteCard"]),
+    deleteCard(item) {
+      this.$confirm("Do you really want to delete?").then(res => {
         if (res) this.DeleteCard(item);
       });
     },
@@ -118,6 +118,7 @@ export default {
           this.stripeValidationError = result.error.message;
         } else {
           this.CreateCard(result.token);
+          this.createDialog = false;
         }
       });
     },

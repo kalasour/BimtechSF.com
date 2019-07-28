@@ -56,6 +56,7 @@ export default new Vuex.Store({
             state.isLoading = false
           })
           .catch((error) => {
+            state.isLoading = false
             console.log(error);
           });
       }).catch(function (err) {
@@ -78,6 +79,7 @@ export default new Vuex.Store({
             state.isLoading = false
           })
           .catch((error) => {
+            state.isLoading = false
             console.log(error);
           });
       }).catch(function (err) {
@@ -85,6 +87,7 @@ export default new Vuex.Store({
       });
     },
     CreateCard(state, payload) {
+      state.isLoading = true
       state.user.getIdToken(true).then((token) => {
         axios({
           method: 'post',
@@ -95,9 +98,11 @@ export default new Vuex.Store({
           }
         })
           .then((response) => {
+            state.isLoading = false
             console.log(response.data);
           })
           .catch((error) => {
+            state.isLoading = false
             console.log(error);
           });
       }).catch(function (err) {

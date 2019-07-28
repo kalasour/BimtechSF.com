@@ -14,12 +14,16 @@
         <v-card-title class="pb-3">
           <span class="title">Your address</span>
           <v-spacer></v-spacer>
-
+          <v-btn @click="addressManageDialog=true" flat>
+            <v-icon class="mr-2" color="orange orange--text">add_location</v-icon>Manage Address
+          </v-btn>
           <v-icon @click="addressDialog=false" class="red--text" :style="{cursor:'pointer'}">clear</v-icon>
         </v-card-title>
         <v-card-text class="py-0">
           <v-layout justify-space-around align-center align-content-center row wrap>
+            <span v-if="!userProfile.Address">Empty</span>
             <v-flex
+              v-else
               xs11
               :class="(index==addressIndex?'orange':'black')+'--text ma-2 py-2 px-3'"
               v-for="(item,index) in userProfile.Address"
@@ -46,9 +50,65 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="addressManageDialog=true" flat>
-            <v-icon class="mr-2" color="orange orange--text">add_location</v-icon>Manage Address
+          <v-btn class="orange white--text" @click="addressDialog=false">ok</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog width="1200" v-model="paymentManageDialog">
+      <v-card>
+        <PaymentSetting />
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="paymentManageDialog=false" flat color="secondary">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog width="600" v-model="paymentDialog">
+      <v-card>
+        <v-card-title class="pb-3">
+          <span class="title">Your Payment Method</span>
+          <v-spacer></v-spacer>
+          <v-btn @click="paymentManageDialog=true" flat>
+            <v-icon class="mr-2" color="orange orange--text">credit_card</v-icon>Manage Payment Method
           </v-btn>
+          <v-icon @click="paymentDialog=false" class="red--text" :style="{cursor:'pointer'}">clear</v-icon>
+        </v-card-title>
+        <v-card-text class="py-0">
+          <v-layout justify-space-around align-center align-content-center row wrap>
+            <span v-if="!userProfile.Stripe.sources.data">Empty</span>
+            <v-flex
+              v-else
+              xs11
+              :class="(index==paymentIndex?'orange':'black')+'--text ma-2 py-2 px-3'"
+              v-for="(item,index) in userProfile.Stripe.sources.data"
+              @click="paymentIndex=index;"
+              :style="{cursor:'pointer',border:'1px solid '+(index==paymentIndex?'orange':'grey')}"
+              :key="index"
+            >
+              <div class="my-auto py-auto">
+                <v-layout row wrap>
+                  <v-flex xs1>
+                    <span>
+                      <v-icon small color="orange" v-if="index==paymentIndex">check_box</v-icon>
+                      <v-icon small v-else>check_box_outline_blank</v-icon>
+                    </span>
+                  </v-flex>
+                  <v-flex xs1 class="text-xs-center">
+                    <v-img
+                      :src="require('payment-icons/min/flat/'+item.brand.toLowerCase()+'.svg')"
+                    ></v-img>
+                  </v-flex>
+                  <v-flex xs10 class="pl-3">
+                    <p>{{item.brand}} **** **** **** {{item.last4}}</p>
+                  </v-flex>
+                </v-layout>
+              </div>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn class="orange white--text" @click="paymentDialog=false">ok</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -240,7 +300,13 @@
       <v-flex xs10 lg3>
         <v-card v-if="$vuetify.breakpoint.lgAndUp" :style="{position: 'fixed',width:'23%'}">
           <v-card-text @click="addressDialog=true" :style="{cursor:'pointer'}" class="pb-0">
-            <p class="grey--text mb-1">Address</p>
+            <v-layout row wrap>
+              <p class="grey--text mb-1">Address</p>
+              <v-spacer></v-spacer>
+              <p class="orange--text mb-1">
+                <v-icon small class="orange--text mr-1">edit</v-icon>Edit
+              </p>
+            </v-layout>
             <v-layout row wrap>
               <v-flex xs2 class="text-xs-center">
                 <v-icon>location_on</v-icon>
@@ -255,6 +321,24 @@
                   >({{address.type}})</span>
                   {{address.zip}}
                 </p>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+          <v-divider class="mx-3"></v-divider>
+          <v-card-text @click="paymentDialog=true" :style="{cursor:'pointer'}" class="pb-0 pt-1">
+            <v-layout row wrap>
+              <p class="grey--text mb-1">Payment</p>
+              <v-spacer></v-spacer>
+              <p class="orange--text mb-1">
+                <v-icon small class="orange--text mr-1">edit</v-icon>Edit
+              </p>
+            </v-layout>
+            <v-layout row wrap>
+              <v-flex xs2 class="text-xs-center">
+                <v-img :src="require('payment-icons/min/flat/'+card.brand.toLowerCase()+'.svg')"></v-img>
+              </v-flex>
+              <v-flex xs10 class="pl-3">
+                <p>{{card.brand}} **** **** **** {{card.last4}}</p>
               </v-flex>
             </v-layout>
           </v-card-text>
@@ -275,12 +359,16 @@
               <p class="mb-1">Total</p>
               <p class="mb-1 orange--text title">${{Total}}</p>
             </v-layout>
-            <v-btn block color="orange white--text">Place order</v-btn>
+            <v-btn block @click="placeOrder" color="orange white--text">Place order</v-btn>
           </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
-    <v-card :style="{position:'sticky',bottom:'0%',left:'0%',width:'100%'}" v-if="$vuetify.breakpoint.xs" class="mt-3">
+    <v-card
+      :style="{position:'sticky',bottom:'0%',left:'0%',width:'100%'}"
+      v-if="$vuetify.breakpoint.xs"
+      class="mt-3"
+    >
       <v-card-text @click="addressDialog=true" :style="{cursor:'pointer'}" class="pb-0">
         <p class="grey--text mb-1">Address</p>
         <v-layout row wrap>
@@ -333,8 +421,9 @@
 import { mapState, mapMutations } from "vuex";
 import vue from "vue";
 import AddressSetting from "./../components/EditProfile/AddressSetting";
+import PaymentSetting from "./../components/EditProfile/PaymentSetting";
 export default {
-  components: { AddressSetting },
+  components: { AddressSetting, PaymentSetting },
   computed: {
     ...mapState(["userProfile", "Cart", "SettingStock"]),
     getList() {
@@ -345,7 +434,21 @@ export default {
       }
     },
     address() {
-      return Object.assign({}, this.userProfile.Address[this.addressIndex]);
+      try {
+        return Object.assign({}, this.userProfile.Address[this.addressIndex]);
+      } catch {
+        return {};
+      }
+    },
+    card() {
+      try {
+        return Object.assign(
+          {},
+          this.userProfile.Stripe.sources.data[this.paymentIndex]
+        );
+      } catch {
+        return {};
+      }
     },
     newSelected() {
       return this.selected
@@ -387,8 +490,27 @@ export default {
       "updateCartAmount",
       "increaseAmount",
       "decreaseAmount",
-      "deleteCart"
+      "deleteCart",
+      "openSnackbar"
     ]),
+    placeOrder() {
+      if (this.address == {}) {
+        this.openSnackbar("Please enter your address.");
+        return;
+      }
+      if (this.card == {}) {
+        this.openSnackbar("Please enter your payment method.");
+        return;
+      }
+      var invoiceObject = {};
+      invoiceObject.List = Object.assign([], this.selected);
+      invoiceObject.Source = Object.assign({}, this.card);
+      invoiceObject.Address = Object.assign({}, this.address);
+      invoiceObject.SubTotal = this.Subtotal;
+      invoiceObject.Taxes = this.Taxes;
+      invoiceObject.Total = this.Total;
+      console.log(invoiceObject);
+    },
     Price(Item) {
       return Item.DiscountActive
         ? this.nonDiscountPrice(Item) -
@@ -464,6 +586,9 @@ export default {
       addressDialog: false,
       addressManageDialog: false,
       addressIndex: -1,
+      paymentDialog: false,
+      paymentManageDialog: false,
+      paymentIndex: 0,
       selected: [],
       updateTemp: {},
       headers: [
