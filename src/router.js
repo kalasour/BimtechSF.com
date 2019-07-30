@@ -8,6 +8,7 @@ import Cart from './views/Cart.vue'
 import { auth } from './firebase'
 import Store from './store'
 import ItemView from './views/ItemView.vue'
+import Orders from './views/Orders.vue'
 Vue.use(Router)
 const router = new Router({
   mode: 'history',
@@ -65,6 +66,12 @@ const router = new Router({
       path: '/Cart',
       name: 'Cart',
       component: Cart,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/Orders',
+      name: 'Orders',
+      component: Orders,
       meta: { requiresAuth: true }
     },
     {

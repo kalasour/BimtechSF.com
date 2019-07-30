@@ -491,7 +491,8 @@ export default {
       "increaseAmount",
       "decreaseAmount",
       "deleteCart",
-      "openSnackbar"
+      "openSnackbar",
+      "PlaceOrder"
     ]),
     placeOrder() {
       if (this.address == {}) {
@@ -502,6 +503,10 @@ export default {
         this.openSnackbar("Please enter your payment method.");
         return;
       }
+      if (this.selected.length == 0) {
+        this.openSnackbar("Please select item.");
+        return;
+      }
       var invoiceObject = {};
       invoiceObject.List = Object.assign([], this.selected);
       invoiceObject.Source = Object.assign({}, this.card);
@@ -509,7 +514,7 @@ export default {
       invoiceObject.SubTotal = this.Subtotal;
       invoiceObject.Taxes = this.Taxes;
       invoiceObject.Total = this.Total;
-      console.log(invoiceObject);
+     this.PlaceOrder(invoiceObject);
     },
     Price(Item) {
       return Item.DiscountActive

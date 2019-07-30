@@ -5,10 +5,10 @@
       <v-btn flat @click="openLogin()">login</v-btn>
     </div>
     <div v-else>
-      <v-btn flat v-if="userProfile.isAdmin" @click="$router.push({path:'/Manager'})">
+      <v-btn flat v-if="userProfile.isAdmin" to="/Manager">
         <v-icon>perm_data_setting</v-icon>Manager
       </v-btn>
-      <v-btn flat @click="$router.push({path:'/Cart'})">
+      <v-btn flat to="/Cart">
         <v-badge color="orange" overlap right>
           <template v-slot:badge>
             <span>{{numItem}}</span>
@@ -25,8 +25,12 @@
           </v-btn>
         </template>
         <v-list dark>
-          <v-list-tile @click="$router.push({path:'/Profile'})">
+          <v-list-tile to="/Profile">
             <v-list-tile-title>My account</v-list-tile-title>
+            <v-icon class="ml-3">settings</v-icon>
+          </v-list-tile>
+           <v-list-tile to="/Orders">
+            <v-list-tile-title>My Orders</v-list-tile-title>
             <v-icon class="ml-3">menu</v-icon>
           </v-list-tile>
           <v-list-tile @click="Logout()">
@@ -38,6 +42,12 @@
     </div>
   </div>
 </template>
+<style>
+a.primary--text {
+    color: orange !important;
+    caret-color: orange !important;
+}
+</style>
 
 <script>
 import { mapMutations, mapState } from "vuex";

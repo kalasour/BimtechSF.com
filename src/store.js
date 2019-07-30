@@ -24,11 +24,20 @@ export default new Vuex.Store({
     userProfile: {},
     Categories: [],
     listCate: [],
+    Charges: [],
     snackbar: false,
     snackbarmsg: '',
     SettingStock: {}
   },
   mutations: {
+    FetchCharges(state) {
+      firestore.collection('Charges').where('customer', '==', state.userProfile.Stripe.id).onSnapshot((docs) => {
+        state.Charges = new Array(docs.docs.length);
+        docs.docs.forEach((item, index) => {
+          Vue.set(state.Charges, index, item.data())
+        })
+      })
+    },
     View(state, payload) {
       if (payload.data().view == null) {
         payload.ref.update({
@@ -49,6 +58,29 @@ export default new Vuex.Store({
           data: {
             userTk: token,
             cardTk: payload
+          }
+        })
+          .then((response) => {
+            console.log(response.data);
+            state.isLoading = false
+          })
+          .catch((error) => {
+            state.isLoading = false
+            console.log(error);
+          });
+      }).catch(function (err) {
+        console.error(err);
+      });
+    },
+    PlaceOrder(state, payload) {
+      state.isLoading = true
+      state.user.getIdToken(true).then((token) => {
+        axios({
+          method: 'post',
+          url: 'https://us-central1-bimtechsf.cloudfunctions.net/Express/PlaceOrder',
+          data: {
+            userTk: token,
+            payload: payload
           }
         })
           .then((response) => {
