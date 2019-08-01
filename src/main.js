@@ -8,9 +8,11 @@ import ItemCard from "./components/ItemCard";
 import UploadButton from 'vuetify-upload-button';
 import draggable from 'vuedraggable'
 import { auth, firestore } from './firebase'
+import Invoice from "./components/Orders/Invoice";
 import { Store } from 'vuex';
 Vue.component('draggable', draggable)
 Vue.component('ItemCard', ItemCard)
+Vue.component('Invoice', Invoice)
 Vue.component('upload-btn', UploadButton)
 Vue.use(VuetifyConfirm, {
   buttonTrueText: 'Accept',

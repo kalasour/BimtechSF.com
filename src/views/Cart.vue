@@ -495,11 +495,20 @@ export default {
       "PlaceOrder"
     ]),
     placeOrder() {
-      if (this.address == {}) {
+      if (
+        this.address == {} ||
+        this.address == null ||
+        Object.values(this.address).length == 0
+      ) {
         this.openSnackbar("Please enter your address.");
         return;
       }
-      if (this.card == {}) {
+      return;
+      if (
+        this.card == {} ||
+        this.card == null ||
+        Object.values(this.card).length == 0
+      ) {
         this.openSnackbar("Please enter your payment method.");
         return;
       }
@@ -514,7 +523,7 @@ export default {
       invoiceObject.SubTotal = this.Subtotal;
       invoiceObject.Taxes = this.Taxes;
       invoiceObject.Total = this.Total;
-     this.PlaceOrder(invoiceObject);
+      this.PlaceOrder(invoiceObject);
     },
     Price(Item) {
       return Item.DiscountActive
