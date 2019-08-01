@@ -9,6 +9,7 @@ import { auth } from './firebase'
 import Store from './store'
 import ItemView from './views/ItemView.vue'
 import Orders from './views/Orders.vue'
+import InvoiceView from './views/InvoiceView.vue'
 Vue.use(Router)
 const router = new Router({
   mode: 'history',
@@ -28,6 +29,12 @@ const router = new Router({
       path: '/RestaurantSupply/:cate/:subcate',
       name: 'RestaurantSupplySubcate',
       component: Cate,
+    },
+    {
+      path: '/Invoice/:Id',
+      name: 'InvoiceView',
+      component: InvoiceView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/RestaurantSupply/:cate/:page',

@@ -1,5 +1,5 @@
 <template>
-  <v-card :style="{'border-radius':'10px'}">
+  <v-card :style="{'border-radius':'10px'}" :to="'/Invoice/'+Item.id">
     <v-card-title class="py-1 mx-2">
       <v-layout row wrap>
         <v-flex xs6>
