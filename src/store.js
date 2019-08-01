@@ -465,6 +465,7 @@ export default new Vuex.Store({
           firestore.collection('Users').doc(state.user.uid).onSnapshot(async docSnapshot => {
             Vue.set(state, 'userProfile', docSnapshot.data())
             // state.userProfile = await docSnapshot.data()
+            this.commit('FetchCharges')
             docSnapshot.ref.collection('Cart').orderBy("createdAt", "desc").onSnapshot(async (snapshot) => {
               state.Cart = Object.assign(state.Cart, snapshot.docs.map(item => item.data()))
               if (state.Cart.length != snapshot.docs.length) state.Cart = state.Cart.slice(0, snapshot.docs.length)
@@ -486,6 +487,7 @@ export default new Vuex.Store({
           // state.isLoading = false
         }
       });
+
       firestore.collection('Stock').onSnapshot(async function (querySnapshot) {
         // state.isLoading = true
         state.Stock = [];

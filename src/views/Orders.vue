@@ -20,7 +20,7 @@ import { mapState, mapMutations } from "vuex";
 export default {
   components: {},
   mounted() {
-    this.FetchCharges();
+    
   },
   methods: {
     ...mapMutations(["FetchCharges"])

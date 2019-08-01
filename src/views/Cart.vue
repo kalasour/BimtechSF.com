@@ -503,7 +503,6 @@ export default {
         this.openSnackbar("Please enter your address.");
         return;
       }
-      return;
       if (
         this.card == {} ||
         this.card == null ||
