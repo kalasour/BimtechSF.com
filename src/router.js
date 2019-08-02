@@ -10,6 +10,7 @@ import Store from './store'
 import ItemView from './views/ItemView.vue'
 import Orders from './views/Orders.vue'
 import InvoiceView from './views/InvoiceView.vue'
+import User from './components/Manager/User.vue'
 Vue.use(Router)
 const router = new Router({
   mode: 'history',
@@ -61,6 +62,12 @@ const router = new Router({
       path: '/Manager/',
       name: 'ManagerRoot',
       component: Manager,
+      meta: { requiresAdmin: true, requiresAuth: true }
+    },
+    {
+      path: '/Manager/User/:uid',
+      name: 'User',
+      component: User,
       meta: { requiresAdmin: true, requiresAuth: true }
     },
     {

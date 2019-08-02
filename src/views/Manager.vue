@@ -1,7 +1,8 @@
 <template>
   <div v-if="userProfile.isAdmin">
     <StockPage v-if="bottomNav==0" />
-    <v-footer></v-footer>
+    <UserPage v-if="bottomNav==1" />
+    <v-footer ></v-footer>
     <v-bottom-nav fixed :active.sync="bottomNav" :color="color" :value="true" dark shift>
       <v-btn dark to="/Manager/Stock">
         <span>Stocks</span>
@@ -27,7 +28,8 @@
 </template>
 
 <script>
-import StockPage from "../components/Stock";
+import StockPage from "../components/Manager/Stock";
+import UserPage from "../components/Manager/Users";
 import { mapState, mapMutations } from "vuex";
 import Vue from "vue";
 export default {
@@ -46,7 +48,8 @@ export default {
     }
   },
   components: {
-    StockPage
+    StockPage,
+    UserPage
   },
   watch: {
     // userProfile:function(){
