@@ -8,9 +8,9 @@
           </v-card-title>
         </v-card>
       </v-flex>
-       <v-flex md12 xs12 lg10 v-for="(item,index) in Charges" :key="index">
-            <Invoice class="mt-2" :Item="item" />
-          </v-flex>
+      <v-flex md12 xs12 lg10 v-for="(item,index) in Charges" :key="index">
+        <Invoice class="mt-2" :Item="item" />
+      </v-flex>
     </v-layout>
   </div>
 </template>
@@ -19,9 +19,7 @@
 import { mapState, mapMutations } from "vuex";
 export default {
   components: {},
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     ...mapMutations(["FetchCharges"])
   },
