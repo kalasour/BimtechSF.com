@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <v-layout row wrap justify-center class="my-2">
     <v-flex md12 lg10>
       <v-card>
@@ -43,17 +42,6 @@
       </v-card>
     </v-flex>
   </v-layout>
-=======
-<v-app>
-    <v-container>
-        <v-layout column>
-            <v-card>
-              <div class="title">{{User.email}}</div>
-            </v-card>
-        </v-layout>
-    </v-container>
-</v-app>
->>>>>>> 2a8f84ffd56eb21d93e8501f769465caa1b9eb94
 </template>
 
 <script>
@@ -62,7 +50,6 @@ import {
 } from "../../firebase";
 import Vue from "vue";
 export default {
-<<<<<<< HEAD
   data() {
     return {
       User: {},
@@ -107,26 +94,5 @@ export default {
     }
   },
   components: {}
-=======
-    data() {
-        return {
-            User: {}
-        };
-    },
-    created() {
-        this.fetchUser();
-    },
-    methods: {
-        fetchUser() {
-            firestore
-                .collection("Users")
-                .doc(this.$route.params.uid)
-                .onSnapshot(snap => {
-                    this.User = Object.assign({}, snap.data());
-                });
-        }
-    },
-    components: {}
->>>>>>> 2a8f84ffd56eb21d93e8501f769465caa1b9eb94
 };
 </script>
