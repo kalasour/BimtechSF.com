@@ -13,118 +13,116 @@ import InvoiceView from './views/InvoiceView.vue'
 import User from './components/Manager/User.vue'
 Vue.use(Router)
 const router = new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home
-    },
-    // {
-    //   path: '/RestaurantSupply/*',
-    //   name: 'RestaurantSupply',
-    //   component: Cate
-    // },
-    {
-      path: '/RestaurantSupply/:cate/:subcate',
-      name: 'RestaurantSupplySubcate',
-      component: Cate,
-    },
-    {
-      path: '/Invoice/:Id',
-      name: 'InvoiceView',
-      component: InvoiceView,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/RestaurantSupply/:cate/:page',
-      name: 'RestaurantSupplySubcatePage',
-      component: Cate,
-    },
-    {
-      path: '/RestaurantSupply/:cate',
-      name: 'RestaurantSupply',
-      component: Cate,
-    },
-    {
-      path: '/Manager/:state',
-      name: 'Manager',
-      component: Manager,
-      meta: { requiresAdmin: true, requiresAuth: true }
-    },
-    {
-      path: '/Item/:id',
-      name: 'ItemView',
-      component: ItemView,
-    },
-    {
-      path: '/Manager/',
-      name: 'ManagerRoot',
-      component: Manager,
-      meta: { requiresAdmin: true, requiresAuth: true }
-    },
-    {
-      path: '/Manager/User/:uid',
-      name: 'User',
-      component: User,
-      meta: { requiresAdmin: true, requiresAuth: true }
-    },
-    {
-      path: '/Profile/:state',
-      name: 'Profile',
-      component: EditProfile,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/Cart',
-      name: 'Cart',
-      component: Cart,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/Orders',
-      name: 'Orders',
-      component: Orders,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/Profile/',
-      name: 'ProfileRoot',
-      component: EditProfile,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    }
-  ]
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [{
+            path: '/',
+            name: 'home',
+            component: Home
+        },
+        // {
+        //   path: '/RestaurantSupply/*',
+        //   name: 'RestaurantSupply',
+        //   component: Cate
+        // },
+        {
+            path: '/RestaurantSupply/:cate/:subcate',
+            name: 'RestaurantSupplySubcate',
+            component: Cate,
+        },
+        {
+            path: '/Invoice/:Id',
+            name: 'InvoiceView',
+            component: InvoiceView,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/RestaurantSupply/:cate/:page',
+            name: 'RestaurantSupplySubcatePage',
+            component: Cate,
+        },
+        {
+            path: '/RestaurantSupply/:cate',
+            name: 'RestaurantSupply',
+            component: Cate,
+        },
+        {
+            path: '/Manager/:state',
+            name: 'Manager',
+            component: Manager,
+            meta: { requiresAdmin: true, requiresAuth: true }
+        },
+        {
+            path: '/Item/:id',
+            name: 'ItemView',
+            component: ItemView,
+        },
+        {
+            path: '/Manager/',
+            name: 'ManagerRoot',
+            component: Manager,
+            meta: { requiresAdmin: true, requiresAuth: true }
+        },
+        {
+            path: '/Manager/User/:uid',
+            name: 'User',
+            component: User,
+            meta: { requiresAdmin: true, requiresAuth: true }
+        },
+        {
+            path: '/Profile/:state',
+            name: 'Profile',
+            component: EditProfile,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/Cart',
+            name: 'Cart',
+            component: Cart,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/Orders',
+            name: 'Orders',
+            component: Orders,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/Profile/',
+            name: 'ProfileRoot',
+            component: EditProfile,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/about',
+            name: 'about',
+            // route level code-splitting
+            // this generates a separate chunk (about.[hash].js) for this route
+            // which is lazy-loaded when the route is visited.
+            component: () =>
+                import ( /* webpackChunkName: "about" */ './views/About.vue')
+        }
+    ]
 })
-router.afterEach(() => {
-})
+router.afterEach(() => {})
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to
-    .matched
-    .some(record => record.meta.requiresAuth)
-  const requiresAdmin = to
-    .matched
-    .some(record => record.meta.requiresAdmin)
-  const user = auth
-    .currentUser
-  const isAdmin = Store.state.userProfile.isAdmin
-  if (requiresAuth && !user) {
-    Store.commit('openLogin')
-    next(from)
-  } else if (requiresAdmin && !isAdmin) {
-    alert('Sorry,we can\'t access this!')
-    next(from)
-  }
-  else {
-    next()
-  }
+    const requiresAuth = to
+        .matched
+        .some(record => record.meta.requiresAuth)
+    const requiresAdmin = to
+        .matched
+        .some(record => record.meta.requiresAdmin)
+    const user = auth
+        .currentUser
+    const isAdmin = Store.state.userProfile.isAdmin
+    if (requiresAuth && !user) {
+        Store.commit('openLogin')
+        next(from)
+    } else if (requiresAdmin && !isAdmin) {
+        alert('Sorry,we can\'t access this!')
+        next(from)
+    } else {
+        next()
+    }
 })
 export default router

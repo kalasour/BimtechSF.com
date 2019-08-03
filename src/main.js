@@ -10,38 +10,37 @@ import draggable from 'vuedraggable'
 import { auth, firestore } from './firebase'
 import Invoice from "./components/Orders/Invoice";
 import { Store } from 'vuex';
+
 Vue.component('draggable', draggable)
 Vue.component('ItemCard', ItemCard)
 Vue.component('Invoice', Invoice)
 Vue.component('upload-btn', UploadButton)
 Vue.use(VuetifyConfirm, {
-  buttonTrueText: 'Accept',
-  buttonFalseText: 'Discard',
-  color: 'warning',
-  icon: 'warning',
-  title: 'Warning',
-  width: 350,
-  property: '$confirm'
+    buttonTrueText: 'Accept',
+    buttonFalseText: 'Discard',
+    color: 'warning',
+    icon: 'warning',
+    title: 'Warning',
+    width: 350,
+    property: '$confirm'
 })
 Vue.config.performance = true
 Vue.config.productionTip = false
 store.commit('initialize')
 
-const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-  if (firebaseUser) {
-    var userProfile = {}
-    await firestore.collection('Users').doc(firebaseUser.uid).get().then(docSnapshot => {
-      userProfile = docSnapshot.data()
-    });
-    await store.commit('initUser', { user: firebaseUser, userProfile: userProfile })
+const unsubscribe = auth.onAuthStateChanged(async(firebaseUser) => {
+    if (firebaseUser) {
+        var userProfile = {}
+        await firestore.collection('Users').doc(firebaseUser.uid).get().then(docSnapshot => {
+            userProfile = docSnapshot.data()
+        });
+        await store.commit('initUser', { user: firebaseUser, userProfile: userProfile })
 
-  }
-  new Vue({
-    router,
-    store,
-    render: h => h(App)
-  }).$mount('#app')
-  unsubscribe()
+    }
+    new Vue({
+        router,
+        store,
+        render: h => h(App)
+    }).$mount('#app')
+    unsubscribe()
 })
-
-

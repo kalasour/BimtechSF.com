@@ -11,6 +11,7 @@
       <span :style="{color:'#454544'}">{{ snackbarmsg }}</span>
       <v-btn color="orange" flat @click="snack=false">Close</v-btn>
     </v-snackbar>
+    
     <v-toolbar dark color="#454544" fixed app>
       <v-toolbar-title class="headline text-uppercase">
         <span>BIMTECHSF</span>
