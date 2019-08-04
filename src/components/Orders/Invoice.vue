@@ -1,5 +1,5 @@
 <template>
-  <v-card :style="{'border-radius':'10px'}" :to="'/Invoice/'+Item.id">
+  <v-card :style="{'border-radius':'0px'}" :to="'/Invoice/'+Item.id">
     <v-card-title class="py-1 mx-2">
       <v-layout row wrap>
         <v-flex xs6>
@@ -53,7 +53,7 @@
               >
                 {{(Object.values(item.Options))[ind][it.id].name}}
                 <span
-                  v-if="item.OpSelected.length-1!=index"
+                  v-if="item.OpSelected.length-1!=ind"
                 >,</span>
               </span>
             </div>
