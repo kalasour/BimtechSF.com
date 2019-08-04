@@ -8,8 +8,8 @@
       </v-card>
       <v-card style="border-radius: 10px;" class="ma-2" v-for="(item,i) in Charge.List" :key="i">
         <v-container fluid>
-          <v-flex v-for="(img,j) in item" :key="j">
-            <v-img max-width="150" max-height="150" class="size" :src="img"></v-img>
+          <v-flex>
+            <v-img max-width="150" max-height="150" class="size" :src="item.imgs[0]"></v-img>
           </v-flex>
           <v-card-title>
             <div style="font-size: 20px" class="title">{{ item.name }}</div>
