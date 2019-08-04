@@ -1,6 +1,6 @@
 <template>
   <v-card :style="{'border-radius':'0px'}" :to="'/Invoice/'+Item.id">
-    <v-card-title class="py-1 mx-2">
+    <v-card-title class="pt-2 pb-0 mx-2">
       <v-layout row wrap>
         <v-flex xs6>
           <v-layout row wrap>
@@ -79,6 +79,20 @@
             <p class="mb-1 subheading">x{{ item.amount }}</p>
           </div>
         </v-flex>
+        <v-flex xs1>
+          <s
+            v-if="nonDiscountPrice(item)!=Price(item)"
+            class="grey--text caption"
+          >${{ item.price==null?0:nonDiscountPrice(item) }}</s>
+          <p class="orange--text subheading">${{ item.price==null?0:(Price(item)*item.amount) }}</p>
+        </v-flex>
+      </v-layout>
+    </v-card-text>
+    <v-card-text>
+      <v-divider class="my-2"></v-divider>
+      <v-layout class="mx-2" row wrap justify-space-between>
+      <p class="mb-0 title">Total:</p>
+       <p class="mb-0 title">${{Item.Total}}</p>
       </v-layout>
     </v-card-text>
   </v-card>
@@ -89,6 +103,32 @@ export default {
   props: {
     Item: Object
   },
-  components: {}
+  components: {},
+  methods: {
+    Price(Item) {
+      return Item.DiscountActive
+        ? this.nonDiscountPrice(Item) -
+            (Item.DiscountAmount == "" || Item.DiscountAmount == null
+              ? 0
+              : Item.DiscountAmount) -
+            (Item.DiscountPer == "" || Item.DiscountPer == null
+              ? 0
+              : (parseFloat(Item.DiscountPer) / 100) *
+                this.nonDiscountPrice(Item))
+        : this.nonDiscountPrice(Item);
+    },
+    nonDiscountPrice(Item) {
+      return (
+        parseFloat(Item.price) +
+        parseFloat(
+          Item.OpSelected.length == 0
+            ? 0
+            : Item.OpSelected.map(item => item.price).reduce(
+                (sum, num) => parseFloat(sum) + parseFloat(num)
+              )
+        )
+      ).toFixed(2);
+    }
+  }
 };
 </script>

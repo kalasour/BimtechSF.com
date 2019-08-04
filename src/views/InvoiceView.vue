@@ -3,14 +3,29 @@
     <v-layout row wrap justify-center>
       <v-flex xs12 lg10 md12>
         <v-layout xs12 column wrap>
-          <v-card class="grey lighten-3 mt-3" :style="{'border-radius':'10px'}">
-            <v-card-title>
+          <v-card color class="mt-2 lighten-3">
+            <v-card-title class="pb-0">
               <p class="title mb-0">Order(s) tracking</p>
             </v-card-title>
+            <v-divider class="my-2 mx-3"></v-divider>
+            <v-card-text class="pt-0">
+              <v-layout row wrap justify-space-between>
+                <p class="mb-1">Subtotal</p>
+                <p class="mb-1">${{Charge.SubTotal}}</p>
+              </v-layout>
+              <v-layout row wrap justify-space-between>
+                <p class="mb-1">Taxes</p>
+                <p class="mb-1">${{Charge.Taxes}}</p>
+              </v-layout>
+              <v-layout row wrap justify-space-between>
+                <p class="mb-1 title">Total</p>
+                <p class="mb-1 orange--text title">${{Charge.Total}}</p>
+              </v-layout>
+            </v-card-text>
           </v-card>
           <v-card
             style="border-radius: 10px;"
-            class="ma-2"
+            class="my-2"
             v-for="(item,i) in Charge.List"
             :key="i"
           >
@@ -24,7 +39,7 @@
                 <div class="text-uppercase" style="font-size: 20px;">{{ item.amount }}</div>
                 <v-spacer></v-spacer>
                 <template>
-                  <v-btn @click.stop="toggleNo = !toggleNo" flat>
+                  <v-btn @click.stop="show(i)">
                     More informations
                     <v-icon>keyboard_arrow_down</v-icon>
                   </v-btn>
@@ -34,11 +49,7 @@
                 <v-card-title v-if="(item.OpSelected).length !== 0">
                   <div class="grey--text" style="font-size: 15px">Option : {{' '}}</div>
                   <div v-if="item.OpSelected.length!=0" class="mx-2">
-                    <span
-                      class="text-capitalize"
-                      v-for="(it,ind) in item.OpSelected"
-                      :key="ind"
-                    >
+                    <span class="text-capitalize" v-for="(it,ind) in item.OpSelected" :key="ind">
                       {{(Object.values(item.Options))[ind][it.id].name}}
                       <span
                         v-if="item.OpSelected.length-1!=ind"
@@ -49,47 +60,52 @@
               </v-flex>
               <v-divider></v-divider>
 
-              <v-container v-if="toggleNo">
-                <v-card-text transition="slide-y-transition">
-                  <v-icon color="red">location_on</v-icon>
-                  <div
-                    style="font-size: 15px; display: inline "
-                    class="black--text mb-1"
-                  >Delivering address</div>
-                  <v-layout row wrap>
-                    <v-flex xs10>
-                      <p class="mb-0">{{Charge.Address.firstname}} {{Charge.Address.lastname}}</p>
-                      <p>Tel.{{Charge.Address.phone}}</p>
-                      <p
-                        class="mb-0 grey--text"
-                      >{{Charge.Address.address}} {{Charge.Address.city}} {{Charge.Address.company}}</p>
-                      <p class="grey--text">
-                        {{Charge.Address.state==null? '' : Charge.Address.state.name}}
-                        <span
-                          v-if="Charge.Address.type!=null"
-                        >({{Charge.Address.type}})</span>
-                        {{Charge.Address.zip}}
-                      </p>
-                    </v-flex>
-                  </v-layout>
-                </v-card-text>
+              <v-expand-transition>
+                <v-container v-if="toggleNo[i]">
+                  <v-card-text transition="slide-y-transition">
+                    <v-icon color="red">location_on</v-icon>
+                    <div
+                      style="font-size: 15px; display: inline "
+                      class="black--text mb-1"
+                    >Delivering address</div>
+                    <v-layout row wrap>
+                      <v-flex xs10>
+                        <p class="mb-0">{{Charge.Address.firstname}} {{Charge.Address.lastname}}</p>
+                        <p>Tel.{{Charge.Address.phone}}</p>
+                        <p
+                          class="mb-0 grey--text"
+                        >{{Charge.Address.address}} {{Charge.Address.city}} {{Charge.Address.company}}</p>
+                        <p class="grey--text">
+                          {{Charge.Address.state==null? '' : Charge.Address.state.name}}
+                          <span
+                            v-if="Charge.Address.type!=null"
+                          >({{Charge.Address.type}})</span>
+                          {{Charge.Address.zip}}
+                        </p>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-text>
 
-                <v-divider></v-divider>
-                <v-card-title>
-                  <div class="grey--text" style="font-size: 20px;">{{ item.amount }} Piece(s)</div>
-                  <v-spacer></v-spacer>
-                  <div class="grey--text" style="fontsize: 30">Amount to be paid:</div>
-                  <v-icon color="orange">attach_money</v-icon>
-                  <div class="text-uppercase orange--text" style="font-size: 20px;">{{ item.price }}</div>
-                </v-card-title>
-                <v-card-title>
-                  <h2 class="grey--text">status:</h2>
-                  <div
-                    class="text-uppercase green--text"
-                    style="font-size: 20px"
-                  >{{ Charge.status }}</div>
-                </v-card-title>
-              </v-container>
+                  <v-divider></v-divider>
+                  <v-card-title>
+                    <div class="grey--text" style="font-size: 20px;">{{ item.amount }} Piece(s)</div>
+                    <v-spacer></v-spacer>
+                    <div class="grey--text" style="fontsize: 30">Amount to be paid:</div>
+                    <v-icon color="orange">attach_money</v-icon>
+                    <div
+                      class="text-uppercase orange--text"
+                      style="font-size: 20px;"
+                    >{{ item.price }}</div>
+                  </v-card-title>
+                  <v-card-title>
+                    <h2 class="grey--text">status:</h2>
+                    <div
+                      class="text-uppercase green--text"
+                      style="font-size: 20px"
+                    >{{ Charge.status }}</div>
+                  </v-card-title>
+                </v-container>
+              </v-expand-transition>
             </v-container>
           </v-card>
         </v-layout>
@@ -107,13 +123,26 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import { firestore } from "../firebase";
+import Vue from "vue";
 export default {
   components: {},
   data() {
     return {
       Ch: {},
-      toggleNo: false
+      toggleNo: []
     };
+  },
+  methods: {
+    show(index) {
+      Vue.set(this.toggleNo, index, !this.toggleNo[index]);
+    }
+  },
+  mounted() {
+    try {
+      this.toggleNo = new Array(this.Charge.List.length);
+    } catch {
+      this.toggleNo = [];
+    }
   },
   computed: {
     ...mapState(["Charges", "userProfile"]),

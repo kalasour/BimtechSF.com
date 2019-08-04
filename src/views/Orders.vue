@@ -2,11 +2,9 @@
   <div>
     <v-layout row wrap justify-center class="my-3">
       <v-flex md12 xs12 lg10>
-        <v-card :style="{'border-radius':'10px'}">
-          <v-card-title>
-            <p class="title mb-0">Your orders</p>
-          </v-card-title>
-        </v-card>
+        <div class="pa-3 orange">
+        <p class="title mb-1 white--text">Your orders</p>
+        </div>
       </v-flex>
       <v-flex md12 xs12 lg10 v-for="(item,index) in Charges" :key="index">
         <Invoice class="mt-2" :Item="item" />
