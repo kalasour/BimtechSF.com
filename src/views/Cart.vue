@@ -307,7 +307,7 @@
                 <v-icon small class="orange--text mr-1">edit</v-icon>Edit
               </p>
             </v-layout>
-            <v-layout row wrap>
+            <v-layout v-if="Object.values(address).length!=0" row wrap>
               <v-flex xs2 class="text-xs-center">
                 <v-icon>location_on</v-icon>
               </v-flex>
@@ -333,7 +333,7 @@
                 <v-icon small class="orange--text mr-1">edit</v-icon>Edit
               </p>
             </v-layout>
-            <v-layout row wrap>
+            <v-layout v-if="Object.values(card).length!=0" row wrap>
               <v-flex xs2 class="text-xs-center">
                 <v-img :src="require('payment-icons/min/flat/'+card.brand.toLowerCase()+'.svg')"></v-img>
               </v-flex>
@@ -590,7 +590,7 @@ export default {
   mounted() {
     this.addressIndex =
       this.userProfile.defaultAddress == null
-        ? -1
+        ? 0
         : this.userProfile.defaultAddress;
   },
   data() {
