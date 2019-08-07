@@ -90,9 +90,10 @@
     </v-card-text>
     <v-card-text>
       <v-divider class="my-2"></v-divider>
-      <v-layout class="mx-2" row wrap justify-space-between>
-      <p class="mb-0 title">Total:</p>
-       <p class="mb-0 title">${{Item.Total}}</p>
+      <v-layout class="mx-2" row wrap>
+        <v-spacer></v-spacer>
+        <p class="mb-0 mr-2 title">Total :</p>
+        <p class="mb-0 title">${{Item.Total}}</p>
       </v-layout>
     </v-card-text>
   </v-card>

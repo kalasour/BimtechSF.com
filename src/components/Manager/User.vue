@@ -24,6 +24,20 @@
                   <span class="grey--text">E-mail :</span>
                   {{User.email}}
                 </p>
+                <div v-if="User.email">
+                  <v-btn
+                    dark
+                    color="secondary"
+                    @click="ChangeStateUser({id:$route.params.uid,state:!User.isAdmin})"
+                    v-if="User.isAdmin"
+                  >Disable admin</v-btn>
+                  <v-btn
+                    dark
+                    @click="ChangeStateUser({id:$route.params.uid,state:!User.isAdmin})"
+                    color="orange"
+                    v-else
+                  >Change to admin</v-btn>
+                </div>
               </v-card-text>
             </v-card>
           </v-tab-item>
@@ -45,9 +59,8 @@
 </template>
 
 <script>
-import {
-    firestore
-} from "../../firebase";
+import { firestore } from "../../firebase";
+import { mapMutations } from "vuex";
 import Vue from "vue";
 export default {
   data() {
@@ -74,6 +87,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["ChangeStateUser"]),
     fetchCharges() {
       firestore
         .collection("Charges")

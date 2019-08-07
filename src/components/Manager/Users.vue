@@ -2,7 +2,10 @@
   <v-container>
     <div v-for="(item,index) in Users" :key="index">
       <v-card class="my-3" :to="'User/'+item.id">
-        <v-card-title>{{item.data().email}}</v-card-title>
+        <v-card-title>
+          {{item.data().email}}
+          <v-icon v-if="item.data().isAdmin" class="ml-2">accessibility</v-icon>
+        </v-card-title>
       </v-card>
     </div>
   </v-container>

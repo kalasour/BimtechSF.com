@@ -38,6 +38,16 @@ export default new Vuex.Store({
         })
       })
     },
+    ChangeStateUser(state, payload) {
+      state.isLoading = true;
+      firestore.collection('Users').doc(payload.id).update({
+        isAdmin: payload.state
+      }).then(() => {
+        state.isLoading = false
+      }).catch(() => {
+        state.isLoading = false
+      })
+    },
     View(state, payload) {
       if (payload.data().view == null) {
         payload.ref.update({
